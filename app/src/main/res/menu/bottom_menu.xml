@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/nav_home"
+        android:icon="@drawable/ic_home"
+        android:title="Inicio"/>
+
+    <item
+        android:id="@+id/nav_subjects"
+        android:icon="@drawable/ic_folder"
+        android:title="Materias"/>
+
+    <item
+        android:id="@+id/nav_notes"
+        android:icon="@drawable/ic_book"
+        android:title="Apuntes"/>
+
+    <item
+        android:id="@+id/nav_ai"
+        android:icon="@drawable/ic_star"
+        android:title="IA"/>
+
+</menu>
