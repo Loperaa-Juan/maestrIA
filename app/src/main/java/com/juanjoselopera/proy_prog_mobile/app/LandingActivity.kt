@@ -29,7 +29,7 @@ class LandingActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav)
         val subjectsCard = findViewById<CardView>(R.id.SubjectsCard)
         val notesCard = findViewById<CardView>(R.id.notesCard)
-        val transcriptionsCard = findViewById<CardView>(R.id.TranscriptionsCard)
+        // val transcriptionsCard = findViewById<CardView>(R.id.TranscriptionsCard)
         val keyIdeasCard = findViewById<CardView>(R.id.KeyIdeasCard)
         val cardApuntes = findViewById<CardView>(R.id.CardApuntes)
 
@@ -60,10 +60,10 @@ class LandingActivity : AppCompatActivity() {
             startActivity(Intent(this, ApuntesActivity::class.java))
         }
 
-        transcriptionsCard.setOnClickListener {
+        // transcriptionsCard.setOnClickListener {
             // Asumiendo que va a Apuntes o una actividad similar si no existe una específica
-            startActivity(Intent(this, ApuntesActivity::class.java))
-        }
+          //  startActivity(Intent(this, ApuntesActivity::class.java))
+        // }
 
         keyIdeasCard.setOnClickListener {
              startActivity(Intent(this, AIActivity::class.java))

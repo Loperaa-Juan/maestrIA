@@ -178,48 +178,8 @@
 
                 </androidx.cardview.widget.CardView>
 
-                <!-- CARD TRANSCRIPCIONES-->
-                <androidx.cardview.widget.CardView
-                    android:id="@+id/TranscriptionsCard"
-                    android:layout_width="0dp"
-                    android:layout_height="120dp"
-                    android:layout_columnWeight="1"
-                    android:backgroundTint="@color/white"
-                    app:cardCornerRadius="14dp"
-                    app:cardElevation="2dp">
 
-                    <LinearLayout
-                        android:padding="16dp"
-                        android:orientation="vertical"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent">
-
-                        <ImageView
-                            android:layout_width="28dp"
-                            android:layout_height="28dp"
-                            android:src="@drawable/ic_book"
-                            app:tint="@color/red"/>
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="5"
-                            android:textColor="@color/dark_gray"
-                            android:textSize="20sp"
-                            android:textStyle="bold"
-                            android:layout_marginTop="8dp"/>
-
-                        <TextView
-                            android:layout_height="wrap_content"
-                            android:layout_width="wrap_content"
-                            android:text="Transcripciones"
-                            android:textSize="12sp"
-                            android:textColor="#777"/>
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-                <!-- CARD IDEAS CLAVE-->
+                <!-- CARD INTELIGENCIA ARTIFICIAL -->
                 <androidx.cardview.widget.CardView
                     android:id="@+id/KeyIdeasCard"
                     android:layout_width="0dp"
@@ -244,7 +204,7 @@
                         <TextView
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="20"
+                            android:text="AI"
                             android:textColor="@color/dark_gray"
                             android:textSize="20sp"
                             android:textStyle="bold"
@@ -253,7 +213,7 @@
                         <TextView
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="Ideas Clave"
+                            android:text="Artificial Intelligence"
                             android:textSize="12sp"
                             android:textColor="#777"/>
                     </LinearLayout>
