@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center_horizontal"
     android:padding="24dp"
@@ -41,7 +41,7 @@
         android:textColor="#6C757D"
         android:layout_marginTop="4dp"/>
 
-    <!-- LOGIN -->
+    <!-- CARD LOGIN -->
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -71,6 +71,7 @@
                     android:gravity="center"
                     android:text="Ingresar"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:background="@drawable/bg_segmented_selected" />
 
                 <TextView
@@ -79,42 +80,24 @@
                     android:layout_weight="1"
                     android:gravity="center"
                     android:text="Registrarse"
-                    />
+                    android:textColor="@color/black"/>
             </LinearLayout>
 
             <!-- EMAIL -->
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Email"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/black"
-                />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp">
-                <com.google.android.material.textfield.TextInputEditText
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                android:layout_marginTop="24dp">
 
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/useremail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="Email"
+                    android:inputType="textEmailAddress"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <!-- PASSWORD -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Password"
-                android:textStyle="bold"
-                android:textSize="14sp"
-                android:layout_marginTop="24dp"
-                android:textColor="@color/black"
-                />
-
             <com.google.android.material.textfield.TextInputLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -122,31 +105,33 @@
                 app:endIconMode="password_toggle">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/userpassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:hint="Contraseña"
                     android:inputType="textPassword"/>
             </com.google.android.material.textfield.TextInputLayout>
 
-            <!-- BOTÓN INICIO DE SESIÓN -->
-
+            <!-- BOTÓN -->
             <Button
+                android:id="@+id/btnIngresar"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:layout_marginTop="20dp"
                 android:text="Ingresar"
                 android:textColor="@color/white"
-                android:backgroundTint="#0B132B"/>
+                android:backgroundTint="@color/red"/>
 
+            <!-- MENSAJE -->
             <TextView
+                android:id="@+id/tvMensaje"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Usa cualquier email y contraseña para demo"
+                android:text=""
                 android:textSize="12sp"
                 android:textColor="#6C757D"
                 android:gravity="center"
                 android:layout_marginTop="10dp"/>
-
 
         </LinearLayout>
 

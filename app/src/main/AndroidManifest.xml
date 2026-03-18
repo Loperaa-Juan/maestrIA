@@ -13,19 +13,25 @@
         android:theme="@style/Theme.Proy_prog_mobile">
         <activity
             android:name=".app.MateriasActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".app.LandingActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".app.ApuntesActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".app.AIActivity"
-            android:exported="false" />
+            android:exported="true" />
         <activity
             android:name=".app.LoginActivity"
-            android:exported="true" />
+            android:exported="true">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+             </intent-filter>
+        </activity>
     </application>
 
 </manifest>
