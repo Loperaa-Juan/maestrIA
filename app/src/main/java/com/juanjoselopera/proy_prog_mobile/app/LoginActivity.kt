@@ -41,9 +41,17 @@ class LoginActivity : AppCompatActivity() {
                     tvMensaje.visibility = View.VISIBLE
                 }
                 usuario == "admin" && password == "1234" -> {
-                    val intent = Intent(this, LandingActivity::class.java)
-                    intent.putExtra("usuario", usuario) // Enviar el nombre de usuario
+                    // 1. Cambiamos el destino a MainActivity
+                    val intent = Intent(this, MainActivity::class.java)
+
+                    // 2. Seguimos enviando el nombre de usuario
+                    intent.putExtra("usuario", usuario)
+
+                    // 3. Iniciamos la actividad principal
                     startActivity(intent)
+
+                    // 4. IMPORTANTE: Cerramos el Login para que no se pueda regresar con el botón atrás
+                    finish()
                 }
                 else -> {
                     // Caso: credenciales incorrectas

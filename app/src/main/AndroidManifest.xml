@@ -12,25 +12,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Proy_prog_mobile">
         <activity
-            android:name=".app.MateriasActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.LandingActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.ApuntesActivity"
-            android:exported="true" />
-        <activity
-            android:name=".app.AIActivity"
-            android:exported="true" />
+            android:name=".app.MainActivity"
+            android:exported="false" />
+
         <activity
             android:name=".app.LoginActivity"
             android:exported="true">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
-             </intent-filter>
+            </intent-filter>
         </activity>
     </application>
 
