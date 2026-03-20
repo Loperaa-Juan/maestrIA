@@ -9,55 +9,7 @@
     android:background="#F6F7FB"
     android:padding="16dp">
 
-    <!-- HEADER -->
-    <LinearLayout
-        android:id="@+id/header"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:backgroundTint="@color/white"
-        android:padding="16dp"
-        android:gravity="center_vertical">
 
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_book"
-            app:tint="#E53935"/>
-
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:layout_marginStart="8dp">
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="MaestrIA"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#111"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Apuntes inteligentes"
-                android:textSize="12sp"
-                android:textColor="#777"/>
-        </LinearLayout>
-
-        <ImageView
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:background="@drawable/bg_profile_circle"
-            android:padding="8dp"
-            android:src="@android:drawable/ic_menu_myplaces"
-            app:tint="#E53935"/>
-
-    </LinearLayout>
-    
     <!-- CONTENIDO SCROLL -->
     <ScrollView
         android:layout_width="match_parent"
@@ -160,14 +112,4 @@
             </GridLayout>
         </LinearLayout>
     </ScrollView>
-
-    <!-- BOTTOM NAVIGATION -->
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/bottomNav"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="#FFFFFF"
-        app:itemIconTint="@color/nav_item_color"
-        app:itemTextColor="@color/nav_item_color"
-        app:menu="@menu/bottom_menu"/>
 </LinearLayout>
