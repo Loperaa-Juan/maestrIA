@@ -1,4 +1,4 @@
-package com.juanjoselopera.proy_prog_mobile.app
+package com.juanjoselopera.proy_prog_mobile.app.ui.landing
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,6 +8,10 @@ import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
 
 class LandingFragment : Fragment() {
 

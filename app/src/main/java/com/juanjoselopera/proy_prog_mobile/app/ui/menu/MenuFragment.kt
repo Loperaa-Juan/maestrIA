@@ -7,11 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.juanjoselopera.proy_prog_mobile.R
-import com.juanjoselopera.proy_prog_mobile.app.AIFragment
-import com.juanjoselopera.proy_prog_mobile.app.ApuntesFragment
-import com.juanjoselopera.proy_prog_mobile.app.LandingFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
-import com.juanjoselopera.proy_prog_mobile.app.MateriasFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
