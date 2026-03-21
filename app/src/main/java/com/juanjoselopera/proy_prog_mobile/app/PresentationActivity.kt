@@ -25,21 +25,14 @@ class PresentationActivity : AppCompatActivity() {
         val btnIniciarSesion = findViewById<Button>(R.id.btnIrALogin)
 
         btnRegistrarse.setOnClickListener {
-            // Lógica para el botón "Registrarse"
-
             val intent = Intent(this, SignupActivity::class.java)
             startActivity(intent)
         }
 
         btnIniciarSesion.setOnClickListener {
-            // Lógica para el botón "Iniciar Sesión"
-
-            val intent = Intent(this, LoginActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
+            intent.putExtra("view", "login")
             startActivity(intent)
         }
-
-
-
-
     }
 }

@@ -9,7 +9,7 @@
     android:gravity="center_horizontal"
     android:padding="24dp"
     android:background="#F5F5F7"
-    tools:context=".app.LoginActivity">
+    tools:context=".app.ui.login.LoginActivity">
 
     <!-- Icono Superior -->
     <ImageView
