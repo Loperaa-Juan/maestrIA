@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.juanjoselopera.proy_prog_mobile" />
+                  <option name="mobileSdkAppId" value="1:636038395703:android:d8a13a48e6b194192c8cb2" />
+                  <option name="projectId" value="maestria-695da" />
+                  <option name="projectNumber" value="636038395703" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "636038395703",
+    "project_id": "maestria-695da",
+    "storage_bucket": "maestria-695da.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:636038395703:android:d8a13a48e6b194192c8cb2",
+        "android_client_info": {
+          "package_name": "com.juanjoselopera.proy_prog_mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDm2Oopf7NWSZh3vsPK949XaWONnKJbU1g"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
