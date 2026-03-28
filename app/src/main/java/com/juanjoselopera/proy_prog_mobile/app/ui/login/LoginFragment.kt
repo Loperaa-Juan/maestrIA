@@ -7,11 +7,15 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
-import com.juanjoselopera.proy_prog_mobile.app.util.Resource
+import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment
 import com.juanjoselopera.proy_prog_mobile.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class LoginFragment : Fragment() {
@@ -36,41 +40,54 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
-        binding.btnIngresar.setOnClickListener {
-            handleLogin()
-        }
-    }
+        with(binding) {
+            btnIngresar.setOnClickListener {
+                val email = useremail.text.toString().trim()
+                val password = userpassword.text.toString().trim()
+                viewModel.login(email, password)
+            }
 
-    private fun initObservers() {
-        viewModel.loginState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is Resource.Success -> {
-                    (activity as? MainActivity)?.let { mainActivity ->
-                        mainActivity.setNavComponentsVisibility(true)
-                        mainActivity.replaceMainFragment(LandingFragment(), false)
-                    }
-                }
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
-                }
-                is Resource.Loading -> {
-                    // Opcional: mostrar un progress bar
-                }
-                is Resource.Finished -> {
-                    // Opcional: ocultar progress bar
+            tvCreateAccount.setOnClickListener {
+                (activity as? MainActivity)?.let { mainActivity ->
+                    mainActivity.setNavComponentsVisibility(false)
+                    mainActivity.replaceMainFragment(SignUpFragment())
                 }
             }
         }
     }
 
-    private fun handleLogin() {
-        val email = binding.useremail.text.toString().trim()
-        val password = binding.userpassword.text.toString().trim()
+    private fun initObservers() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    handleUiState(state)
+                }
+            }
+        }
+    }
 
-        if (email.isNotEmpty() && password.isNotEmpty()) {
-            viewModel.login(email, password)
-        } else {
-            Toast.makeText(requireContext(), "Por favor completa todos los campos", Toast.LENGTH_SHORT).show()
+    private fun handleUiState(state: LoginUiState) {
+        with(binding) {
+            tilEmail.error = state.emailError
+            tilPassword.error = state.passwordError
+
+            btnIngresar.isEnabled = !state.isLoading
+
+            if (state.isSuccess) {
+                navigateToHome()
+            }
+
+            state.error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.resetError()
+            }
+        }
+    }
+
+    private fun navigateToHome() {
+        (activity as? MainActivity)?.let { mainActivity ->
+            mainActivity.setNavComponentsVisibility(true)
+            mainActivity.replaceMainFragment(LandingFragment(), false)
         }
     }
 
