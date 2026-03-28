@@ -1,15 +1,20 @@
 package com.juanjoselopera.proy_prog_mobile.app.ui.signup
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.juanjoselopera.proy_prog_mobile.app.util.Resource
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment
 import com.juanjoselopera.proy_prog_mobile.databinding.FragmentSignUpBinding
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class SignUpFragment : Fragment() {
@@ -36,31 +41,47 @@ class SignUpFragment : Fragment() {
     private fun initListeners() {
         with(binding) {
             btnRegistrar.setOnClickListener {
-                handleSignUp()
+                val email = useremail.text.toString().trim()
+                val password = userpassword.text.toString().trim()
+                viewModel.signUp(email, password)
+            }
+
+            tvLogin.setOnClickListener {
+                (activity as? MainActivity)?.let { mainActivity ->
+                    mainActivity.setNavComponentsVisibility(true)
+                    mainActivity.replaceMainFragment(LoginFragment())
+                }
             }
         }
     }
 
     private fun initObservers() {
-        viewModel.signUpState.observe(viewLifecycleOwner) { state ->
-            when (state) {
-                is Resource.Success -> {
-                    Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
-
-                    activity?.onBackPressed()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.uiState.collect { state ->
+                    handleUiState(state)
                 }
-                is Resource.Error -> {
-                    Toast.makeText(requireContext(), "Error: ${state.message}", Toast.LENGTH_SHORT).show()
-                }
-                else -> Unit
             }
         }
     }
 
-    private fun handleSignUp() {
-        val email = binding.useremail.text.toString()
-        val password = binding.userpassword.text.toString()
-        viewModel.signUp(email, password)
+    private fun handleUiState(state: SignUpUiState) {
+        with(binding) {
+            tilEmail.error = state.emailError
+            tilPassword.error = state.passwordError
+
+            btnRegistrar.isEnabled = !state.isLoading
+
+            if (state.isSuccess) {
+                Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
+                activity?.onBackPressed()
+            }
+
+            state.error?.let {
+                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+                viewModel.resetError()
+            }
+        }
     }
 
     override fun onDestroyView() {
