@@ -18,7 +18,8 @@ data class SignUpUiState(
     val error: String? = null,
     val isSuccess: Boolean = false,
     val emailError: String? = null,
-    val passwordError: String? = null
+    val passwordError: String? = null,
+    val confirmPasswordError: String? = null,
 )
 
 @HiltViewModel
@@ -29,11 +30,10 @@ class SignUpViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
-    fun signUp(email: String, password: String) {
-        // Evita múltiples peticiones simultáneas si ya está cargando
+    fun signUp(email: String, password: String, confirmPassword: String) {
         if (_uiState.value.isLoading) return
 
-        if (!validateFields(email, password)) return
+        if (!validateFields(email, password, confirmPassword)) return
 
         signUpUseCase(email, password).onEach { resource ->
             when (resource) {
@@ -53,26 +53,47 @@ class SignUpViewModel @Inject constructor(
         }.launchIn(viewModelScope)
     }
 
-    private fun validateFields(email: String, password: String): Boolean {
-        var isValid = true
-        val emailError = if (email.isBlank()) {
-            isValid = false
-            "El email no puede estar vacío"
-        } else if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
-            isValid = false
-            "Email inválido"
-        } else null
+    private fun validateFields(email: String, password: String, confirmPassword: String): Boolean {
+        val emailError = when {
+            email.isBlank() -> "El email no puede estar vacío"
+            !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches() -> "Email inválido"
+            else -> null
+        }
 
-        val passwordError = if (password.isBlank()) {
-            isValid = false
-            "La contraseña no puede estar vacía"
-        } else if (password.length < 6) {
-            isValid = false
-            "La contraseña debe tener al menos 6 caracteres"
-        } else null
+        val passwordError = validatePassword(password)
+        val confirmPasswordError = validateConfirmPassword(password, confirmPassword)
 
-        _uiState.update { it.copy(emailError = emailError, passwordError = passwordError, error = null) }
-        return isValid
+        _uiState.update {
+            it.copy(
+                emailError = emailError,
+                passwordError = passwordError,
+                confirmPasswordError = confirmPasswordError,
+                error = null,
+            )
+        }
+        return emailError == null && passwordError == null && confirmPasswordError == null
+    }
+
+    private fun validatePassword(password: String): String? {
+        if (password.isBlank()) return "La contraseña no puede estar vacía"
+
+        val violations = buildList {
+            if (password.length < 8) add("mínimo 8 caracteres")
+            if (!password.any { it.isUpperCase() }) add("una mayúscula")
+            if (!password.any { it.isDigit() }) add("un número")
+            if (!password.any { !it.isLetterOrDigit() }) add("un carácter especial")
+        }
+
+        return if (violations.isEmpty()) null
+        else "Debe incluir " + violations.joinToString(", ")
+    }
+
+    private fun validateConfirmPassword(password: String, confirmPassword: String): String? {
+        return when {
+            confirmPassword.isBlank() -> "Confirma tu contraseña"
+            confirmPassword != password -> "Las contraseñas no coinciden"
+            else -> null
+        }
     }
 
     fun resetError() {

@@ -43,7 +43,8 @@ class SignUpFragment : Fragment() {
             btnRegistrar.setOnClickListener {
                 val email = useremail.text.toString().trim()
                 val password = userpassword.text.toString().trim()
-                viewModel.signUp(email, password)
+                val confirmPassword = userconfirmpassword.text.toString().trim()
+                viewModel.signUp(email, password, confirmPassword)
             }
 
             tvLogin.setOnClickListener {
@@ -69,6 +70,7 @@ class SignUpFragment : Fragment() {
         with(binding) {
             tilEmail.error = state.emailError
             tilPassword.error = state.passwordError
+            tilConfirmPassword.error = state.confirmPasswordError
 
             btnRegistrar.isEnabled = !state.isLoading
 

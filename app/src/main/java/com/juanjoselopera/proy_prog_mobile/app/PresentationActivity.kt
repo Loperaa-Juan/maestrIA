@@ -9,10 +9,12 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignupActivity
+import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 
 class PresentationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        applySlideInTransition()
         enableEdgeToEdge()
         setContentView(R.layout.activity_presentation)
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->

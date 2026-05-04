@@ -8,12 +8,14 @@ import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment
+import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        applySlideInTransition()
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
