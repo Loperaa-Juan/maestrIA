@@ -12,6 +12,8 @@ import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
+import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRight
+import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
 
 class LandingFragment : Fragment() {
 
@@ -54,5 +56,6 @@ class LandingFragment : Fragment() {
             (activity as? MainActivity)?.replaceMainFragment(ApuntesFragment())
         }
 
+        view.findFirstViewGroupById(R.id.landingContent)?.animateChildrenSlideInFromRight()
     }
 }
