@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
@@ -37,8 +38,11 @@ class LandingFragment : Fragment() {
         val cardApuntes = view.findViewById<CardView>(R.id.CardApuntes)
 
 
-        val usuario = activity?.intent?.getStringExtra("usuario") ?: "Usuario"
-        tvWelcomeUser.text = "Hola, $usuario 👋"
+        val currentUser = FirebaseAuth.getInstance().currentUser
+        val userName = currentUser?.displayName?.takeIf { it.isNotBlank() }
+            ?: currentUser?.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() }
+            ?: "Usuario"
+        tvWelcomeUser.text = "Hola, $userName 👋"
 
         subjectsCard.setOnClickListener {
             (activity as? MainActivity)?.replaceMainFragment(MateriasFragment())
