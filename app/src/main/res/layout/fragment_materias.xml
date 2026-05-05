@@ -1,27 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
+<FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F6F7FB"
-    android:padding="16dp">
+    android:background="#F6F7FB">
 
-
-    <!-- CONTENIDO SCROLL -->
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-        
+        android:layout_height="match_parent">
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="16dp">
-            
+            android:padding="24dp"
+            android:paddingBottom="100dp">
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -29,7 +25,7 @@
                 android:textSize="22sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:layout_marginBottom="4dp"/>
+                android:layout_marginBottom="4dp" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -37,80 +33,26 @@
                 android:text="Organiza tus apuntes por asignatura"
                 android:textSize="13sp"
                 android:textColor="@color/dark_gray"
-                android:layout_marginBottom="20dp"/>
+                android:layout_marginBottom="20dp" />
 
             <GridLayout
                 android:id="@+id/materiasGrid"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:columnCount="2">
+                android:columnCount="2" />
 
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#E3F2FD">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#1565C0"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Cálculo I"
-                            android:textStyle="bold"
-                            android:textColor="#1565C0"
-                            android:layout_marginTop="8dp"/>
-
-                    </LinearLayout>
-
-                </androidx.cardview.widget.CardView>
-
-
-                <androidx.cardview.widget.CardView
-                    android:layout_width="0dp"
-                    android:layout_height="140dp"
-                    android:layout_columnWeight="1"
-                    android:layout_margin="8dp"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="2dp">
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="vertical"
-                        android:gravity="center"
-                        android:background="#E8F5E9">
-
-                        <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#2E7D32"/>
-
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="Física General"
-                            android:textStyle="bold"
-                            android:textColor="#2E7D32"
-                            android:layout_marginTop="8dp"/>
-
-                    </LinearLayout>
-                </androidx.cardview.widget.CardView>
-            </GridLayout>
         </LinearLayout>
     </ScrollView>
-</LinearLayout>
+
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/fabAddMateria"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_margin="20dp"
+        android:contentDescription="Crear materia"
+        android:src="@android:drawable/ic_input_add"
+        app:backgroundTint="#7C3AED"
+        app:tint="@color/white" />
+
+</FrameLayout>
