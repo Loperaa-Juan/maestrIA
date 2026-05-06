@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="24dp"
-    android:background="#F5F5F7"
+    android:background="@color/colorPageBackground"
     >
 
     <ImageView
@@ -27,7 +27,7 @@
         android:text="MaestrIA"
         android:textSize="28sp"
         android:textStyle="bold"
-        android:textColor="#0D1B2A"
+        android:textColor="@color/colorTextStrong"
         android:layout_marginTop="16dp"
         android:layout_gravity="center_horizontal" />
 
@@ -36,7 +36,7 @@
         android:layout_height="wrap_content"
         android:text="Tus apuntes potenciados con IA"
         android:textSize="16sp"
-        android:textColor="#6C757D"
+        android:textColor="@color/colorTextSecondary"
         android:layout_marginTop="4dp"
         android:layout_gravity="center_horizontal"/>
 
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="24dp"
         app:cardElevation="4dp"
-        app:cardBackgroundColor="#FFFFFF">
+        app:cardBackgroundColor="@color/colorCardBackground">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -68,7 +68,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:textColor="@color/white"
-                android:backgroundTint="#D32F2F"
+                android:backgroundTint="@color/colorActionButton"
                 app:cornerRadius="12dp"/>
 
             <Button
@@ -80,8 +80,8 @@
                 android:text="Iniciar sesión"
                 android:textAllCaps="false"
                 android:textSize="16sp"
-                android:textColor="#0D1B2A"
-                app:strokeColor="#0D1B2A"
+                android:textColor="@color/colorTextStrong"
+                app:strokeColor="@color/colorTextStrong"
                 app:cornerRadius="12dp"/>
 
             <TextView
@@ -89,7 +89,7 @@
                 android:layout_height="wrap_content"
                 android:text="Al continuar, aceptas nuestros términos."
                 android:textSize="12sp"
-                android:textColor="#9E9E9E"
+                android:textColor="@color/colorTextSecondary"
                 android:gravity="center"
                 android:layout_marginTop="16dp"/>
 

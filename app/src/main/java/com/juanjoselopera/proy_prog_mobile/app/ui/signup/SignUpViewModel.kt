@@ -2,8 +2,10 @@ package com.juanjoselopera.proy_prog_mobile.app.ui.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.app.domain.usecase.FirebaseSignUpUseCase
 import com.juanjoselopera.proy_prog_mobile.app.util.Resource
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -24,15 +26,16 @@ data class SignUpUiState(
 
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
-    private val signUpUseCase: FirebaseSignUpUseCase
-): ViewModel() {
+    private val signUpUseCase: FirebaseSignUpUseCase,
+    private val sessionManager: SessionManager,
+    private val firebaseAuth: FirebaseAuth
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(SignUpUiState())
     val uiState: StateFlow<SignUpUiState> = _uiState.asStateFlow()
 
     fun signUp(email: String, password: String, confirmPassword: String) {
         if (_uiState.value.isLoading) return
-
         if (!validateFields(email, password, confirmPassword)) return
 
         signUpUseCase(email, password).onEach { resource ->
@@ -41,6 +44,9 @@ class SignUpViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true, error = null) }
                 }
                 is Resource.Success -> {
+                    // Al registrarse correctamente se inicia sesión de inmediato y se persiste
+                    val uid = firebaseAuth.currentUser?.uid ?: ""
+                    sessionManager.saveSession(uid = uid, email = email)
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 }
                 is Resource.Error -> {

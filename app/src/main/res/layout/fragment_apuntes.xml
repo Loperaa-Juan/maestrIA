@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F6F7FB"
+    android:background="@color/colorPageBackground"
     android:padding="16dp"
   >
 
@@ -31,7 +31,7 @@
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:paddingBottom="12dp"
-                android:textColor="@android:color/black"/>
+                android:textColor="@color/colorTextPrimary"/>
 
             <!--  Tarjeta 1  -->
             <androidx.cardview.widget.CardView
@@ -44,7 +44,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="@color/white"
+                    android:background="@color/colorCardBackground"
                     android:orientation="vertical"
                     android:padding="12dp">
 
@@ -58,14 +58,14 @@
                             android:layout_width="36dp"
                             android:layout_height="36dp"
                             android:src="@android:drawable/ic_menu_agenda"
-                            app:tint="#1565C0"/>
+                            app:tint="@color/colorAccentBlue"/>
 
                         <TextView
                             android:layout_width="0dp"
                             android:layout_height="wrap_content"
                             android:layout_weight="1"
                             android:layout_marginStart="8dp"
-                            android:textColor="@color/black"
+                            android:textColor="@color/colorTextPrimary"
                             android:text="Límites y Continuidad"
                             android:textSize="15sp"
                             android:textStyle="bold"/>
@@ -80,7 +80,7 @@
                             android:layout_width="20dp"
                             android:layout_height="20dp"
                             android:src="@android:drawable/ic_menu_delete"
-                            app:tint="#E53935"/>
+                            app:tint="@color/colorAccentPrimary"/>
 
                     </LinearLayout>
 
@@ -95,8 +95,8 @@
                             android:layout_height="wrap_content"
                             android:text="Cálculo I"
                             android:textSize="11sp"
-                            android:textColor="#1565C0"
-                            android:background="#E3F2FD"
+                            android:textColor="@color/colorChipBlueText"
+                            android:background="@color/colorChipBlueBg"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
                             android:paddingTop="2dp"
@@ -107,7 +107,7 @@
                             android:layout_height="wrap_content"
                             android:text="2026-02-10"
                             android:textSize="11sp"
-                            android:textColor="#888888"
+                            android:textColor="@color/colorTextSecondary"
                             android:layout_marginStart="8dp"/>
 
                     </LinearLayout>
@@ -117,7 +117,7 @@
                         android:layout_height="wrap_content"
                         android:text="Definición de límite: Sea f una función definida en un intervalo abierto..."
                         android:textSize="12sp"
-                        android:textColor="#555555"
+                        android:textColor="@color/colorTextSecondary"
                         android:layout_marginTop="6dp"
                         />
 
@@ -132,7 +132,8 @@
                             android:layout_height="wrap_content"
                             android:text="Definición formal de lími..."
                             android:textSize="11sp"
-                            android:background="@color/dark_gray"
+                            android:background="@color/colorTagBackground"
+                            android:textColor="@color/colorTagText"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
                             android:paddingTop="3dp"
@@ -144,7 +145,8 @@
                             android:layout_height="wrap_content"
                             android:text="Propiedades de operaciones..."
                             android:textSize="11sp"
-                            android:background="@color/dark_gray"
+                            android:background="@color/colorTagBackground"
+                            android:textColor="@color/colorTagText"
                             android:paddingStart="8dp"
                             android:paddingEnd="8dp"
                             android:paddingTop="3dp"

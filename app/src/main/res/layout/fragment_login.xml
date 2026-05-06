@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    android:background="#F5F5F7">
+    android:background="@color/colorPageBackground">
 
     <LinearLayout
         android:id="@+id/main"
@@ -34,7 +34,7 @@
             android:text="MaestrIA"
             android:textSize="26sp"
             android:textStyle="bold"
-            android:textColor="#0D1B2A"
+            android:textColor="@color/colorTextStrong"
             android:layout_marginTop="12dp" />
 
         <!-- Subtitulo -->
@@ -43,7 +43,7 @@
             android:layout_height="wrap_content"
             android:text="Tus apuntes potenciados con IA"
             android:textSize="14sp"
-            android:textColor="#6C757D"
+            android:textColor="@color/colorTextSecondary"
             android:layout_marginTop="4dp"/>
 
         <!-- CARD LOGIN -->
@@ -54,7 +54,7 @@
             android:layout_marginBottom="20dp"
             app:cardCornerRadius="20dp"
             app:cardElevation="4dp"
-            app:cardBackgroundColor="#FFFFFF">
+            app:cardBackgroundColor="@color/colorCardBackground">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -101,7 +101,7 @@
                     android:layout_marginTop="20dp"
                     android:text="Ingresar"
                     android:textColor="@color/white"
-                    android:backgroundTint="@color/red"/>
+                    android:backgroundTint="@color/colorActionButton"/>
 
                 <!-- MENSAJE -->
                 <TextView
@@ -110,7 +110,7 @@
                     android:layout_height="wrap_content"
                     android:text=""
                     android:textSize="12sp"
-                    android:textColor="#6C757D"
+                    android:textColor="@color/colorTextSecondary"
                     android:gravity="center"
                     android:layout_marginTop="10dp"/>
 
@@ -123,7 +123,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="¿No tienes cuenta? Regístrate aquí"
-            android:textColor="@color/red"
+            android:textColor="@color/colorLinkText"
             android:textStyle="bold"
             android:layout_marginTop="8dp"
             android:padding="8dp" />

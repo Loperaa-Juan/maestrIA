@@ -4,7 +4,7 @@
     android:id="@+id/userProfileRoot"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F5F7">
+    android:background="@color/colorPageBackground">
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -27,7 +27,7 @@
                 app:contentInsetStartWithNavigation="0dp"
                 app:navigationIcon="@drawable/ic_arrow_back"
                 app:navigationContentDescription="Volver"
-                app:titleTextColor="#0D1B2A" />
+                app:titleTextColor="@color/colorTextStrong" />
 
             <!-- HEADER CARD -->
             <FrameLayout
@@ -58,7 +58,7 @@
                             android:padding="22dp"
                             android:src="@android:drawable/ic_menu_myplaces"
                             android:contentDescription="Avatar"
-                            app:tint="#E53935" />
+                            app:tint="@color/colorAccentPrimary" />
 
                         <ImageView
                             android:id="@+id/btnEditAvatar"
@@ -71,7 +71,7 @@
                             android:clickable="true"
                             android:focusable="true"
                             android:contentDescription="Editar foto"
-                            app:tint="#E53935" />
+                            app:tint="@color/colorAccentPrimary" />
                     </FrameLayout>
 
                     <TextView
@@ -139,7 +139,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardBackgroundColor="@color/colorCardBackground"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="3dp">
 
@@ -156,7 +156,7 @@
                             android:background="@drawable/bg_stat_icon"
                             android:padding="8dp"
                             android:src="@drawable/ic_document"
-                            app:tint="#E53935"
+                            app:tint="@color/colorAccentPrimary"
                             android:contentDescription="Apuntes" />
 
                         <TextView
@@ -164,7 +164,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:text="12"
-                            android:textColor="#0D1B2A"
+                            android:textColor="@color/colorTextStrong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -172,7 +172,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Apuntes"
-                            android:textColor="#777"
+                            android:textColor="@color/colorTextSecondary"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -182,7 +182,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardBackgroundColor="@color/colorCardBackground"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="3dp">
 
@@ -199,7 +199,7 @@
                             android:background="@drawable/bg_stat_icon"
                             android:padding="8dp"
                             android:src="@drawable/ic_folder"
-                            app:tint="#E53935"
+                            app:tint="@color/colorAccentPrimary"
                             android:contentDescription="Materias" />
 
                         <TextView
@@ -207,7 +207,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:text="4"
-                            android:textColor="#0D1B2A"
+                            android:textColor="@color/colorTextStrong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -215,7 +215,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Materias"
-                            android:textColor="#777"
+                            android:textColor="@color/colorTextSecondary"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -225,7 +225,7 @@
                     android:layout_height="wrap_content"
                     android:layout_margin="6dp"
                     android:layout_weight="1"
-                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardBackgroundColor="@color/colorCardBackground"
                     app:cardCornerRadius="18dp"
                     app:cardElevation="3dp">
 
@@ -242,7 +242,7 @@
                             android:background="@drawable/bg_stat_icon"
                             android:padding="8dp"
                             android:src="@drawable/ic_star"
-                            app:tint="#E53935"
+                            app:tint="@color/colorAccentPrimary"
                             android:contentDescription="Ideas IA" />
 
                         <TextView
@@ -250,7 +250,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
                             android:text="27"
-                            android:textColor="#0D1B2A"
+                            android:textColor="@color/colorTextStrong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
@@ -258,7 +258,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Ideas IA"
-                            android:textColor="#777"
+                            android:textColor="@color/colorTextSecondary"
                             android:textSize="11sp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -272,7 +272,7 @@
                 android:layout_marginTop="20dp"
                 android:layout_marginBottom="8dp"
                 android:text="Datos de la cuenta"
-                android:textColor="#0D1B2A"
+                android:textColor="@color/colorTextStrong"
                 android:textSize="16sp"
                 android:textStyle="bold" />
 
@@ -280,7 +280,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginHorizontal="20dp"
-                app:cardBackgroundColor="#FFFFFF"
+                app:cardBackgroundColor="@color/colorCardBackground"
                 app:cardCornerRadius="20dp"
                 app:cardElevation="2dp">
 
@@ -294,7 +294,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Nombre"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -303,7 +303,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="—"
-                        android:textColor="#0D1B2A"
+                        android:textColor="@color/colorTextStrong"
                         android:textSize="15sp"
                         android:textStyle="bold" />
 
@@ -311,13 +311,13 @@
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="14dp"
-                        android:background="#EEE" />
+                        android:background="@color/colorDivider" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Email"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -326,20 +326,20 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="—"
-                        android:textColor="#0D1B2A"
+                        android:textColor="@color/colorTextStrong"
                         android:textSize="15sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="14dp"
-                        android:background="#EEE" />
+                        android:background="@color/colorDivider" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="ID de usuario"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -349,20 +349,20 @@
                         android:layout_marginTop="2dp"
                         android:fontFamily="monospace"
                         android:text="—"
-                        android:textColor="#0D1B2A"
+                        android:textColor="@color/colorTextStrong"
                         android:textSize="13sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="14dp"
-                        android:background="#EEE" />
+                        android:background="@color/colorDivider" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Miembro desde"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -371,20 +371,20 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="—"
-                        android:textColor="#0D1B2A"
+                        android:textColor="@color/colorTextStrong"
                         android:textSize="15sp" />
 
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
                         android:layout_marginVertical="14dp"
-                        android:background="#EEE" />
+                        android:background="@color/colorDivider" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Última sesión"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp" />
 
                     <TextView
@@ -393,8 +393,65 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="2dp"
                         android:text="—"
-                        android:textColor="#0D1B2A"
+                        android:textColor="@color/colorTextStrong"
                         android:textSize="15sp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- APPEARANCE -->
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="8dp"
+                android:text="Apariencia"
+                android:textColor="@color/colorTextStrong"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                app:cardBackgroundColor="@color/colorCardBackground"
+                app:cardCornerRadius="20dp"
+                app:cardElevation="2dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:padding="20dp">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Modo oscuro"
+                            android:textColor="@color/colorTextStrong"
+                            android:textSize="15sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Cambia el tema de la aplicación"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp"
+                            android:layout_marginTop="2dp" />
+                    </LinearLayout>
+
+                    <com.google.android.material.switchmaterial.SwitchMaterial
+                        android:id="@+id/switchDarkMode"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
@@ -405,17 +462,17 @@
                 android:layout_height="56dp"
                 android:layout_marginHorizontal="20dp"
                 android:layout_marginTop="24dp"
-                android:backgroundTint="#FFFFFF"
+                android:backgroundTint="@color/colorCardBackground"
                 android:text="Cerrar sesión"
                 android:textAllCaps="false"
-                android:textColor="#D32F2F"
+                android:textColor="@color/colorLogoutText"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 app:icon="@drawable/ic_logout"
                 app:iconGravity="textStart"
-                app:iconTint="#D32F2F"
+                app:iconTint="@color/colorLogoutText"
                 app:cornerRadius="14dp"
-                app:strokeColor="#FFD3D1"
+                app:strokeColor="@color/colorLogoutStroke"
                 app:strokeWidth="1dp" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>

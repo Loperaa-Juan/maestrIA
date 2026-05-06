@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F6F7FB"
+    android:background="@color/colorPageBackground"
     android:padding="16dp"
     >
 
@@ -30,14 +30,14 @@
                 android:text="Hola, Usuario 👋"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="#111"/>
+                android:textColor="@color/colorTextPrimary"/>
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Resumen de tu progreso académico"
                 android:textSize="14sp"
-                android:textColor="#777"
+                android:textColor="@color/colorTextSecondary"
                 android:layout_marginBottom="16dp"/>
 
             <GridLayout
@@ -53,7 +53,7 @@
                     android:layout_width="0dp"
                     android:layout_height="120dp"
                     android:layout_columnWeight="1"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/colorCardBackground"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="2dp">
 
@@ -67,13 +67,13 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:src="@drawable/ic_folder"
-                            app:tint="@color/red"/>
+                            app:tint="@color/colorAccentPrimary"/>
 
                         <TextView
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:text="4"
-                            android:textColor="@color/dark_gray"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:layout_marginTop="8dp"/>
@@ -83,7 +83,7 @@
                             android:layout_width="wrap_content"
                             android:text="Materias"
                             android:textSize="12sp"
-                            android:textColor="#777"/>
+                            android:textColor="@color/colorTextSecondary"/>
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -93,7 +93,7 @@
                     android:id="@+id/notesCard"
                     android:layout_width="0dp"
                     android:layout_height="120dp"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/colorCardBackground"
                     android:layout_columnWeight="1"
                     app:cardCornerRadius="14dp"
                     app:cardElevation="2dp">
@@ -108,7 +108,7 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:src="@drawable/ic_document"
-                            app:tint="@color/red"/>
+                            app:tint="@color/colorAccentPrimary"/>
 
                         <TextView
                             android:layout_height="wrap_content"
@@ -116,7 +116,7 @@
                             android:text="5"
                             android:textSize="20sp"
                             android:textStyle="bold"
-                            android:textColor="@color/dark_gray"
+                            android:textColor="@color/colorTextPrimary"
                             android:layout_marginTop="8dp"/>
 
                         <TextView
@@ -124,7 +124,7 @@
                             android:layout_width="wrap_content"
                             android:text="Apuntes"
                             android:textSize="12sp"
-                            android:textColor="#777"/>
+                            android:textColor="@color/colorTextSecondary"/>
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -137,7 +137,7 @@
                     android:layout_height="120dp"
                     android:layout_columnWeight="1"
                     app:cardCornerRadius="14dp"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="@color/colorCardBackground"
                     app:cardElevation="2dp">
 
                     <LinearLayout
@@ -150,13 +150,13 @@
                             android:layout_width="28dp"
                             android:layout_height="28dp"
                             android:src="@drawable/ic_star"
-                            app:tint="@color/red"/>
+                            app:tint="@color/colorAccentPrimary"/>
 
                         <TextView
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
                             android:text="AI"
-                            android:textColor="@color/dark_gray"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:layout_marginTop="8dp"/>
@@ -166,7 +166,7 @@
                             android:layout_width="wrap_content"
                             android:text="Artificial Intelligence"
                             android:textSize="12sp"
-                            android:textColor="#777"/>
+                            android:textColor="@color/colorTextSecondary"/>
                     </LinearLayout>
 
                 </androidx.cardview.widget.CardView>
@@ -180,7 +180,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:backgroundTint="@color/white"
+                android:backgroundTint="@color/colorCardBackground"
                 app:cardCornerRadius="16dp"
                 app:cardElevation="2dp">
 
@@ -193,7 +193,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textColor="@color/dark_gray"
+                        android:textColor="@color/colorTextPrimary"
                         android:text="Apuntes Recientes"
                         android:textSize="16sp"
                         android:textStyle="bold"/>
@@ -203,7 +203,7 @@
                         android:layout_height="wrap_content"
                         android:text="Tus últimos apuntes"
                         android:textSize="12sp"
-                        android:textColor="#777"
+                        android:textColor="@color/colorTextSecondary"
                         android:layout_marginBottom="12dp"/>
 
                     <androidx.recyclerview.widget.RecyclerView

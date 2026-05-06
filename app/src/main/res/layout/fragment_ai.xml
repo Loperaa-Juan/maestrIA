@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F6F7FB">
+    android:background="@color/colorPageBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -82,7 +82,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Herramientas"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:textSize="16sp"
                 android:textStyle="bold"
                 android:layout_marginBottom="10dp" />
@@ -113,7 +113,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@color/colorCardBackground"
                         android:padding="14dp">
 
                         <FrameLayout
@@ -126,14 +126,14 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_search"
-                                app:tint="#7C3AED" />
+                                app:tint="@color/colorAccentPurple" />
                         </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Deep Research"
-                            android:textColor="@color/black"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="12dp" />
@@ -143,7 +143,7 @@
                             android:layout_height="wrap_content"
                             android:text="Investiga a fondo"
                             android:textSize="11sp"
-                            android:textColor="#777777"
+                            android:textColor="@color/colorTextSecondary"
                             android:layout_marginTop="2dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -166,7 +166,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@color/colorCardBackground"
                         android:padding="14dp">
 
                         <FrameLayout
@@ -179,14 +179,14 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_help"
-                                app:tint="#1D4ED8" />
+                                app:tint="@color/colorAccentBlueAlt" />
                         </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Preguntas"
-                            android:textColor="@color/black"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="12dp" />
@@ -196,7 +196,7 @@
                             android:layout_height="wrap_content"
                             android:text="Pon a prueba lo que sabes"
                             android:textSize="11sp"
-                            android:textColor="#777777"
+                            android:textColor="@color/colorTextSecondary"
                             android:layout_marginTop="2dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -219,7 +219,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@color/colorCardBackground"
                         android:padding="14dp">
 
                         <FrameLayout
@@ -232,14 +232,14 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_edit"
-                                app:tint="#047857" />
+                                app:tint="@color/colorAccentGreen" />
                         </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Conceptos"
-                            android:textColor="@color/black"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="12dp" />
@@ -249,7 +249,7 @@
                             android:layout_height="wrap_content"
                             android:text="Domina ideas clave"
                             android:textSize="11sp"
-                            android:textColor="#777777"
+                            android:textColor="@color/colorTextSecondary"
                             android:layout_marginTop="2dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -272,7 +272,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:orientation="vertical"
-                        android:background="@color/white"
+                        android:background="@color/colorCardBackground"
                         android:padding="14dp">
 
                         <FrameLayout
@@ -285,14 +285,14 @@
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
                                 android:src="@android:drawable/ic_menu_agenda"
-                                app:tint="#C2410C" />
+                                app:tint="@color/colorAccentOrange" />
                         </FrameLayout>
 
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="Resúmenes"
-                            android:textColor="@color/black"
+                            android:textColor="@color/colorTextPrimary"
                             android:textSize="14sp"
                             android:textStyle="bold"
                             android:layout_marginTop="12dp" />
@@ -302,7 +302,7 @@
                             android:layout_height="wrap_content"
                             android:text="Condensa tus apuntes"
                             android:textSize="11sp"
-                            android:textColor="#777777"
+                            android:textColor="@color/colorTextSecondary"
                             android:layout_marginTop="2dp" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
@@ -338,7 +338,7 @@
                             android:layout_height="32dp"
                             android:layout_gravity="center"
                             android:src="@android:drawable/ic_menu_compass"
-                            app:tint="#7C3AED" />
+                            app:tint="@color/colorAccentPurple" />
                     </FrameLayout>
 
                     <TextView
@@ -346,7 +346,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Selecciona una herramienta"
-                        android:textColor="@color/black"
+                        android:textColor="@color/colorTextPrimary"
                         android:textSize="16sp"
                         android:textStyle="bold"
                         android:layout_marginTop="14dp" />
@@ -356,7 +356,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Toca cualquier tarjeta arriba para ver más detalles."
-                        android:textColor="#666666"
+                        android:textColor="@color/colorTextSecondary"
                         android:textSize="12sp"
                         android:gravity="center"
                         android:layout_marginTop="6dp" />
@@ -370,7 +370,7 @@
                         android:enabled="false"
                         android:layout_marginTop="14dp"
                         app:cornerRadius="22dp"
-                        app:backgroundTint="#7C3AED" />
+                        app:backgroundTint="@color/colorAccentPurple" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

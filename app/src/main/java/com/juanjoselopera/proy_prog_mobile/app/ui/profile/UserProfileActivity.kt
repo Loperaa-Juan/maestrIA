@@ -8,14 +8,18 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.PresentationActivity
+import com.juanjoselopera.proy_prog_mobile.app.util.PreferencesManager
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
 import java.text.SimpleDateFormat
@@ -27,6 +31,8 @@ import javax.inject.Inject
 class UserProfileActivity : AppCompatActivity() {
 
     @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var preferencesManager: PreferencesManager
+    @Inject lateinit var sessionManager: SessionManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -43,6 +49,7 @@ class UserProfileActivity : AppCompatActivity() {
         findViewById<Toolbar>(R.id.toolbarProfile).setNavigationOnClickListener { finish() }
 
         bindUser()
+        bindDarkModeSwitch()
 
         findViewById<View>(R.id.btnEditAvatar).setOnClickListener {
             Toast.makeText(this, "Pronto podrás cambiar tu foto", Toast.LENGTH_SHORT).show()
@@ -50,10 +57,22 @@ class UserProfileActivity : AppCompatActivity() {
 
         findViewById<MaterialButton>(R.id.btnLogout).setOnClickListener {
             firebaseAuth.signOut()
+            sessionManager.clearSession()
             val intent = Intent(this, PresentationActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
-            finish()
+        }
+    }
+
+    private fun bindDarkModeSwitch() {
+        val switch = findViewById<SwitchMaterial>(R.id.switchDarkMode)
+        switch.isChecked = preferencesManager.isDarkMode
+        switch.setOnCheckedChangeListener { _, isChecked ->
+            preferencesManager.isDarkMode = isChecked
+            AppCompatDelegate.setDefaultNightMode(
+                if (isChecked) AppCompatDelegate.MODE_NIGHT_YES
+                else AppCompatDelegate.MODE_NIGHT_NO
+            )
         }
     }
 
