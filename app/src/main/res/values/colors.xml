@@ -10,4 +10,33 @@
     <color name="red">#FF0000</color>
     <color name="gray">#9E9E9E</color>
     <color name="dark_gray">#333333</color>
+
+    <!-- Semantic colors — overridden in values-night/colors.xml -->
+    <color name="colorPageBackground">#F5F5F7</color>
+    <color name="colorCardBackground">#FFFFFF</color>
+    <color name="colorTextPrimary">#111111</color>
+    <color name="colorTextStrong">#0D1B2A</color>
+    <color name="colorTextSecondary">#6C757D</color>
+    <color name="colorDivider">#EEEEEE</color>
+    <color name="colorNavBackground">#FFFFFF</color>
+
+    <!-- Accent / brand colors — overridden in values-night/colors.xml -->
+    <color name="colorAccentPrimary">#E53935</color>
+    <color name="colorAccentPurple">#7C3AED</color>
+    <color name="colorAccentBlue">#1565C0</color>
+    <color name="colorAccentBlueAlt">#1D4ED8</color>
+    <color name="colorAccentGreen">#047857</color>
+    <color name="colorAccentOrange">#C2410C</color>
+
+    <!-- Interactive elements — overridden in values-night/colors.xml -->
+    <color name="colorActionButton">#D32F2F</color>
+    <color name="colorLogoutText">#D32F2F</color>
+    <color name="colorLogoutStroke">#FFD3D1</color>
+    <color name="colorLinkText">#D32F2F</color>
+
+    <!-- Tag / chip colors — overridden in values-night/colors.xml -->
+    <color name="colorTagBackground">#EBEBEB</color>
+    <color name="colorTagText">#555555</color>
+    <color name="colorChipBlueBg">#E3F2FD</color>
+    <color name="colorChipBlueText">#1565C0</color>
 </resources>

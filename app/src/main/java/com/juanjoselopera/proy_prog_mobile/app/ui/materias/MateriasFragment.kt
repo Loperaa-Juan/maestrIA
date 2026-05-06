@@ -24,12 +24,20 @@ import androidx.annotation.ColorInt
 import androidx.annotation.DrawableRes
 import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.data.local.entity.MateriaEntity
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRight
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 
+@AndroidEntryPoint
 class MateriasFragment : Fragment() {
 
     data class Materia(
@@ -42,9 +50,6 @@ class MateriasFragment : Fragment() {
     private data class ColorPair(@ColorInt val bg: Int, @ColorInt val accent: Int)
 
     companion object {
-        private val materias = mutableListOf<Materia>()
-        private var initialized = false
-
         private val iconOptions = listOf(
             R.drawable.ic_book,
             R.drawable.ic_folder,
@@ -64,6 +69,8 @@ class MateriasFragment : Fragment() {
         )
     }
 
+    private val viewModel: MateriasViewModel by viewModels()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -72,30 +79,37 @@ class MateriasFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        if (!initialized) {
-            materias += Materia(
-                "Cálculo I",
-                R.drawable.ic_book,
-                colorOptions[0].bg,
-                colorOptions[0].accent
-            )
-            materias += Materia(
-                "Física General",
-                R.drawable.ic_book,
-                colorOptions[1].bg,
-                colorOptions[1].accent
-            )
-            initialized = true
-        }
-
         val grid = view.findViewById<GridLayout>(R.id.materiasGrid)
-        grid.removeAllViews()
-        materias.forEach { addMateriaCard(grid, it) }
-        grid.animateChildrenSlideInFromRight()
+        // -1 indica que todavía no se ha recibido ninguna emisión del Flow
+        var lastCount = -1
+
+        // Observa el StateFlow de Room: se redibuja el grid cada vez que cambia la lista
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.materias.collect { entities ->
+                    grid.removeAllViews()
+                    entities.forEach { entity -> addMateriaCard(grid, entity.toMateria()) }
+                    when {
+                        // Primera carga: anima todos los elementos del grid
+                        lastCount == -1 && entities.isNotEmpty() -> grid.animateChildrenSlideInFromRight()
+                        // Inserción nueva: anima solo la última tarjeta añadida
+                        entities.size > lastCount && lastCount >= 0 -> animateNewCard(grid.getChildAt(grid.childCount - 1))
+                    }
+                    lastCount = entities.size
+                }
+            }
+        }
 
         view.findViewById<FloatingActionButton>(R.id.fabAddMateria).setOnClickListener {
-            showCreateMateriaDialog(grid)
+            showCreateMateriaDialog()
         }
+    }
+
+    // Convierte la entidad de BD al modelo visual que usa el fragment para dibujar las tarjetas
+    private fun MateriaEntity.toMateria(): Materia {
+        val icon = iconOptions.getOrElse(iconIndex) { iconOptions[0] }
+        val pair = colorOptions.getOrElse(colorIndex) { colorOptions[0] }
+        return Materia(name = name, iconRes = icon, bgColor = pair.bg, accentColor = pair.accent)
     }
 
     private fun addMateriaCard(grid: GridLayout, materia: Materia) {
@@ -149,7 +163,7 @@ class MateriasFragment : Fragment() {
         grid.addView(card, params)
     }
 
-    private fun showCreateMateriaDialog(grid: GridLayout) {
+    private fun showCreateMateriaDialog() {
         val context = requireContext()
         val dialog = BottomSheetDialog(context)
         val dialogView = LayoutInflater.from(context)
@@ -203,11 +217,8 @@ class MateriasFragment : Fragment() {
                 nameInput.requestFocus()
                 return@setOnClickListener
             }
-            val pair = colorOptions[colorIdx]
-            val newMateria = Materia(name, iconOptions[iconIdx], pair.bg, pair.accent)
-            materias += newMateria
-            addMateriaCard(grid, newMateria)
-            animateNewCard(grid.getChildAt(grid.childCount - 1))
+            // Persiste en Room; el Flow de getAll() emitirá la nueva lista automáticamente
+            viewModel.addMateria(MateriaEntity(name = name, iconIndex = iconIdx, colorIndex = colorIdx))
             dialog.dismiss()
         }
 
@@ -243,14 +254,13 @@ class MateriasFragment : Fragment() {
 
     private fun buildColorSwatch(context: Context, pair: ColorPair, selected: Boolean): View {
         val size = dp(40).toInt()
-        val view = View(context).apply {
+        return View(context).apply {
             val lp = LinearLayout.LayoutParams(size, size)
             lp.rightMargin = dp(12).toInt()
             layoutParams = lp
             background = colorSwatchBackground(pair.accent, selected)
             tag = "color-swatch"
         }
-        return view
     }
 
     private fun refreshIconSelection(picker: LinearLayout, selectedIdx: Int) {
@@ -270,9 +280,7 @@ class MateriasFragment : Fragment() {
         return GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             setColor(Color.parseColor("#F3F4F6"))
-            if (selected) {
-                setStroke(dp(2).toInt(), Color.parseColor("#7C3AED"))
-            }
+            if (selected) setStroke(dp(2).toInt(), Color.parseColor("#7C3AED"))
         }
     }
 
@@ -280,9 +288,7 @@ class MateriasFragment : Fragment() {
         return GradientDrawable().apply {
             shape = GradientDrawable.OVAL
             setColor(accent)
-            if (selected) {
-                setStroke(dp(3).toInt(), Color.parseColor("#1F2937"))
-            }
+            if (selected) setStroke(dp(3).toInt(), Color.parseColor("#1F2937"))
         }
     }
 

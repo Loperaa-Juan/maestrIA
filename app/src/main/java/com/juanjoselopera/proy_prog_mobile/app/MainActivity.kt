@@ -1,5 +1,6 @@
 package com.juanjoselopera.proy_prog_mobile.app
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -8,11 +9,17 @@ import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         applySlideInTransition()
@@ -20,6 +27,15 @@ class MainActivity : AppCompatActivity() {
 
         if (savedInstanceState == null) {
             val viewToOpen = intent.getStringExtra("view")
+
+            if (!sessionManager.isLoggedIn && viewToOpen !in listOf("login", "signup")) {
+                startActivity(
+                    Intent(this, PresentationActivity::class.java)
+                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                )
+                return
+            }
+
             when (viewToOpen) {
                 "login" -> {
                     // Login sí lleva header y menú según tu solicitud

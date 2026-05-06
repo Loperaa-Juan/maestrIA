@@ -9,11 +9,27 @@ import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignupActivity
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class PresentationActivity : AppCompatActivity() {
+
+    @Inject
+    lateinit var sessionManager: SessionManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Si ya hay sesión guardada se salta la pantalla de presentación directamente
+        if (sessionManager.isLoggedIn) {
+            startActivity(Intent(this, MainActivity::class.java))
+            finish()
+            return
+        }
+
         applySlideInTransition()
         enableEdgeToEdge()
         setContentView(R.layout.activity_presentation)
@@ -27,8 +43,7 @@ class PresentationActivity : AppCompatActivity() {
         val btnIniciarSesion = findViewById<Button>(R.id.btnIrALogin)
 
         btnRegistrarse.setOnClickListener {
-            val intent = Intent(this, SignupActivity::class.java)
-            startActivity(intent)
+            startActivity(Intent(this, SignupActivity::class.java))
         }
 
         btnIniciarSesion.setOnClickListener {

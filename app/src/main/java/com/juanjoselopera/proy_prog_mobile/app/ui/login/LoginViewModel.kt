@@ -2,8 +2,10 @@ package com.juanjoselopera.proy_prog_mobile.app.ui.login
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.app.domain.usecase.FirebaseLoginUseCase
 import com.juanjoselopera.proy_prog_mobile.app.util.Resource
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -23,16 +25,16 @@ data class LoginUiState(
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val loginUseCase: FirebaseLoginUseCase
-): ViewModel() {
+    private val loginUseCase: FirebaseLoginUseCase,
+    private val sessionManager: SessionManager,
+    private val firebaseAuth: FirebaseAuth
+) : ViewModel() {
 
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
     fun login(email: String, password: String) {
-        // Evita múltiples peticiones simultáneas si ya está cargando
         if (_uiState.value.isLoading) return
-
         if (!validateFields(email, password)) return
 
         loginUseCase(email, password).onEach { resource ->
@@ -41,6 +43,10 @@ class LoginViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true, error = null) }
                 }
                 is Resource.Success -> {
+                    // Firebase ya autenticó al usuario; se guarda su UID y email en SharedPreferences
+                    // para que la sesión persista aunque se cierre la app
+                    val uid = firebaseAuth.currentUser?.uid ?: ""
+                    sessionManager.saveSession(uid = uid, email = email)
                     _uiState.update { it.copy(isLoading = false, isSuccess = true) }
                 }
                 is Resource.Error -> {

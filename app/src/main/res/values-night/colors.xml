@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Dark mode overrides for semantic colors -->
+    <color name="colorPageBackground">#121212</color>
+    <color name="colorCardBackground">#1E1E1E</color>
+    <color name="colorTextPrimary">#E0E0E0</color>
+    <color name="colorTextStrong">#E8EAED</color>
+    <color name="colorTextSecondary">#9AA0A6</color>
+    <color name="colorDivider">#2D2D2D</color>
+    <color name="colorNavBackground">#1E1E1E</color>
+
+    <!-- Accent / brand colors — lightened for dark-background readability -->
+    <color name="colorAccentPrimary">#FF6B6B</color>
+    <color name="colorAccentPurple">#A78BFA</color>
+    <color name="colorAccentBlue">#60A5FA</color>
+    <color name="colorAccentBlueAlt">#60A5FA</color>
+    <color name="colorAccentGreen">#34D399</color>
+    <color name="colorAccentOrange">#FB923C</color>
+
+    <!-- Interactive elements -->
+    <color name="colorActionButton">#FF5252</color>
+    <color name="colorLogoutText">#FF6B6B</color>
+    <color name="colorLogoutStroke">#7A2A2A</color>
+    <color name="colorLinkText">#FF8A8A</color>
+
+    <!-- Tag / chip colors -->
+    <color name="colorTagBackground">#2A2A2A</color>
+    <color name="colorTagText">#C8C8C8</color>
+    <color name="colorChipBlueBg">#1A2A45</color>
+    <color name="colorChipBlueText">#90CAF9</color>
+</resources>

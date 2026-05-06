@@ -5,7 +5,7 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F6F7FB">
+    android:background="@color/colorPageBackground">
 
     <ScrollView
         android:layout_width="match_parent"
@@ -24,7 +24,7 @@
                 android:text="Mis Materias"
                 android:textSize="22sp"
                 android:textStyle="bold"
-                android:textColor="@color/black"
+                android:textColor="@color/colorTextPrimary"
                 android:layout_marginBottom="4dp" />
 
             <TextView
@@ -32,7 +32,7 @@
                 android:layout_height="wrap_content"
                 android:text="Organiza tus apuntes por asignatura"
                 android:textSize="13sp"
-                android:textColor="@color/dark_gray"
+                android:textColor="@color/colorTextStrong"
                 android:layout_marginBottom="20dp" />
 
             <GridLayout
@@ -52,7 +52,7 @@
         android:layout_margin="20dp"
         android:contentDescription="Crear materia"
         android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="#7C3AED"
+        app:backgroundTint="@color/colorAccentPurple"
         app:tint="@color/white" />
 
 </FrameLayout>
