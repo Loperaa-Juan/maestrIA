@@ -12,7 +12,6 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
-import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment
 import com.juanjoselopera.proy_prog_mobile.databinding.FragmentLoginBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -40,19 +39,10 @@ class LoginFragment : Fragment() {
     }
 
     private fun initListeners() {
-        with(binding) {
-            btnIngresar.setOnClickListener {
-                val email = useremail.text.toString().trim()
-                val password = userpassword.text.toString().trim()
-                viewModel.login(email, password)
-            }
-
-            tvCreateAccount.setOnClickListener {
-                (activity as? MainActivity)?.let { mainActivity ->
-                    mainActivity.setNavComponentsVisibility(false)
-                    mainActivity.replaceMainFragment(SignUpFragment())
-                }
-            }
+        binding.btnIngresar.setOnClickListener {
+            val email = binding.useremail.text.toString().trim()
+            val password = binding.userpassword.text.toString().trim()
+            viewModel.login(email, password)
         }
     }
 

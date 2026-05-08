@@ -11,7 +11,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
-import com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.databinding.FragmentSignUpBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -39,20 +39,11 @@ class SignUpFragment : Fragment() {
     }
 
     private fun initListeners() {
-        with(binding) {
-            btnRegistrar.setOnClickListener {
-                val email = useremail.text.toString().trim()
-                val password = userpassword.text.toString().trim()
-                val confirmPassword = userconfirmpassword.text.toString().trim()
-                viewModel.signUp(email, password, confirmPassword)
-            }
-
-            tvLogin.setOnClickListener {
-                (activity as? MainActivity)?.let { mainActivity ->
-                    mainActivity.setNavComponentsVisibility(true)
-                    mainActivity.replaceMainFragment(LoginFragment())
-                }
-            }
+        binding.btnRegistrar.setOnClickListener {
+            val email = binding.useremail.text.toString().trim()
+            val password = binding.userpassword.text.toString().trim()
+            val confirmPassword = binding.userconfirmpassword.text.toString().trim()
+            viewModel.signUp(email, password, confirmPassword)
         }
     }
 
@@ -76,13 +67,20 @@ class SignUpFragment : Fragment() {
 
             if (state.isSuccess) {
                 Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
-                activity?.onBackPressed()
+                navigateToHome()
             }
 
             state.error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 viewModel.resetError()
             }
+        }
+    }
+
+    private fun navigateToHome() {
+        (activity as? MainActivity)?.let { mainActivity ->
+            mainActivity.setNavComponentsVisibility(true)
+            mainActivity.replaceMainFragment(LandingFragment(), false)
         }
     }
 
