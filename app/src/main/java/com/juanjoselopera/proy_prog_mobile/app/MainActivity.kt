@@ -1,14 +1,12 @@
 package com.juanjoselopera.proy_prog_mobile.app
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
-import com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment
-import com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
@@ -26,31 +24,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            val viewToOpen = intent.getStringExtra("view")
-
-            if (!sessionManager.isLoggedIn && viewToOpen !in listOf("login", "signup")) {
-                startActivity(
-                    Intent(this, PresentationActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                )
-                return
-            }
-
-            when (viewToOpen) {
-                "login" -> {
-                    // Login sí lleva header y menú según tu solicitud
-                    setNavComponentsVisibility(true)
-                    replaceMainFragment(LoginFragment(), false)
+            if (sessionManager.isLoggedIn) {
+                setNavComponentsVisibility(true)
+                replaceMainFragment(LandingFragment(), false)
+            } else {
+                val tab = when (intent.getStringExtra("view")) {
+                    "signup" -> AuthFragment.TAB_SIGNUP
+                    else -> AuthFragment.TAB_LOGIN
                 }
-                "signup" -> {
-                    // Signup no lleva header ni menú
-                    setNavComponentsVisibility(false)
-                    replaceMainFragment(SignUpFragment(), false)
-                }
-                else -> {
-                    setNavComponentsVisibility(true)
-                    replaceMainFragment(LandingFragment(), false)
-                }
+                setNavComponentsVisibility(false)
+                replaceMainFragment(AuthFragment.newInstance(tab), false)
             }
         }
     }

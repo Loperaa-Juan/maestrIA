@@ -1,72 +1,16 @@
 package com.juanjoselopera.proy_prog_mobile.app.ui.login
 
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
-import android.view.View
-import android.widget.Button
-import android.widget.TextView
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
-import com.google.android.material.textfield.TextInputEditText
-import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
-import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class LoginActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        applySlideInTransition()
-        enableEdgeToEdge()
-        setContentView(R.layout.fragment_login)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
-        }
-
-        val etUsuario = findViewById<TextInputEditText>(R.id.useremail)
-        val etPassword = findViewById<TextInputEditText>(R.id.userpassword)
-        val btnIngresar = findViewById<Button>(R.id.btnIngresar)
-        val tvMensaje = findViewById<TextView>(R.id.tvMensaje)
-
-        btnIngresar.setOnClickListener {
-            val usuario = etUsuario.text.toString().trim()
-            val password = etPassword.text.toString().trim()
-            when {
-                usuario.isEmpty() || password.isEmpty() -> {
-                    // Caso: campos vacíos
-                    tvMensaje.text = "Completá todos los campos antes de continuar."
-                    tvMensaje.setTextColor(Color.parseColor("#B91C1C"))
-                    tvMensaje.visibility = View.VISIBLE
-                }
-                usuario == "admin" && password == "1234" -> {
-                    // 1. Cambiamos el destino a MainActivity
-                    val intent = Intent(this, MainActivity::class.java)
-
-                    // 2. Seguimos enviando el nombre de usuario
-                    intent.putExtra("usuario", usuario)
-
-                    // 3. Iniciamos la actividad principal
-                    startActivity(intent)
-
-                    // 4. IMPORTANTE: Cerramos el Login para que no se pueda regresar con el botón atrás
-                    finish()
-                }
-                else -> {
-                    // Caso: credenciales incorrectas
-                    tvMensaje.text = "Usuario o contraseña incorrectos. Revisá los datos."
-                    tvMensaje.setTextColor(Color.parseColor("#B91C1C"))
-                    tvMensaje.visibility = View.VISIBLE
-                    // etPassword.text.clear() // Limpiar el campo de contraseña
-                }
-            }
-
-
-        }
+        startActivity(Intent(this, MainActivity::class.java).putExtra("view", "login"))
+        finish()
     }
 }

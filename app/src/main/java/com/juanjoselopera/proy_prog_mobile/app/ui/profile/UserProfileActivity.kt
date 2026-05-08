@@ -17,7 +17,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
-import com.juanjoselopera.proy_prog_mobile.app.PresentationActivity
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.util.PreferencesManager
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
@@ -58,7 +58,7 @@ class UserProfileActivity : AppCompatActivity() {
         findViewById<MaterialButton>(R.id.btnLogout).setOnClickListener {
             firebaseAuth.signOut()
             sessionManager.clearSession()
-            val intent = Intent(this, PresentationActivity::class.java)
+            val intent = Intent(this, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         }
