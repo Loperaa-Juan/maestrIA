@@ -30,9 +30,12 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
-import com.juanjoselopera.proy_prog_mobile.app.data.local.entity.MateriaEntity
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
+import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRight
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -43,7 +46,6 @@ class MateriasFragment : Fragment() {
     data class Materia(
         val name: String,
         @DrawableRes val iconRes: Int,
-        @ColorInt val bgColor: Int,
         @ColorInt val accentColor: Int
     )
 
@@ -80,22 +82,20 @@ class MateriasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val grid = view.findViewById<GridLayout>(R.id.materiasGrid)
-        // -1 indica que todavía no se ha recibido ninguna emisión del Flow
         var lastCount = -1
 
-        // Observa el StateFlow de Room: se redibuja el grid cada vez que cambia la lista
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.materias.collect { entities ->
+                viewModel.subjects.collect { subjects ->
                     grid.removeAllViews()
-                    entities.forEach { entity -> addMateriaCard(grid, entity.toMateria()) }
-                    when {
-                        // Primera carga: anima todos los elementos del grid
-                        lastCount == -1 && entities.isNotEmpty() -> grid.animateChildrenSlideInFromRight()
-                        // Inserción nueva: anima solo la última tarjeta añadida
-                        entities.size > lastCount && lastCount >= 0 -> animateNewCard(grid.getChildAt(grid.childCount - 1))
+                    subjects.forEach { subject ->
+                        addMateriaCard(grid, subject.id, subject.toMateria(), subject.name)
                     }
-                    lastCount = entities.size
+                    when {
+                        lastCount == -1 && subjects.isNotEmpty() -> grid.animateChildrenSlideInFromRight()
+                        subjects.size > lastCount && lastCount >= 0 -> animateNewCard(grid.getChildAt(grid.childCount - 1))
+                    }
+                    lastCount = subjects.size
                 }
             }
         }
@@ -105,61 +105,130 @@ class MateriasFragment : Fragment() {
         }
     }
 
-    // Convierte la entidad de BD al modelo visual que usa el fragment para dibujar las tarjetas
-    private fun MateriaEntity.toMateria(): Materia {
+    private fun Subject.toMateria(): Materia {
         val icon = iconOptions.getOrElse(iconIndex) { iconOptions[0] }
         val pair = colorOptions.getOrElse(colorIndex) { colorOptions[0] }
-        return Materia(name = name, iconRes = icon, bgColor = pair.bg, accentColor = pair.accent)
+        return Materia(name = name, iconRes = icon, accentColor = pair.accent)
     }
 
-    private fun addMateriaCard(grid: GridLayout, materia: Materia) {
+    private fun addMateriaCard(grid: GridLayout, subjectId: String, materia: Materia, subjectName: String) {
         val context = grid.context
+
         val card = CardView(context).apply {
-            radius = dp(16f)
-            cardElevation = dp(2f)
+            radius = dp(20f)
+            cardElevation = dp(6f)
+            setCardBackgroundColor(materia.accentColor)
         }
         val params = GridLayout.LayoutParams().apply {
             width = 0
-            height = dp(140).toInt()
+            height = dp(160).toInt()
             columnSpec = GridLayout.spec(GridLayout.UNDEFINED, 1, 1f)
             setMargins(dp(8).toInt(), dp(8).toInt(), dp(8).toInt(), dp(8).toInt())
         }
 
-        val container = LinearLayout(context).apply {
+        // Root frame to allow layering
+        val frame = FrameLayout(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.MATCH_PARENT
             )
+        }
+
+        // Decorative translucent circle, top-right
+        val decorCircle = View(context).apply {
+            val size = dp(90).toInt()
+            val lp = FrameLayout.LayoutParams(size, size, Gravity.TOP or Gravity.END)
+            lp.topMargin = -dp(22).toInt()
+            lp.rightMargin = -dp(22).toInt()
+            layoutParams = lp
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.argb(35, 255, 255, 255))
+            }
+        }
+
+        // Content column pinned to card edges
+        val content = LinearLayout(context).apply {
+            layoutParams = FrameLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT
+            )
             orientation = LinearLayout.VERTICAL
-            gravity = Gravity.CENTER
-            setBackgroundColor(materia.bgColor)
+            setPadding(dp(16).toInt(), dp(16).toInt(), dp(16).toInt(), dp(14).toInt())
         }
 
-        val icon = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(40).toInt(), dp(40).toInt())
+        // Circular icon container
+        val iconCircle = FrameLayout(context).apply {
+            val size = dp(48).toInt()
+            layoutParams = LinearLayout.LayoutParams(size, size)
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                setColor(Color.argb(55, 255, 255, 255))
+            }
+        }
+        val iconView = ImageView(context).apply {
+            layoutParams = FrameLayout.LayoutParams(dp(26).toInt(), dp(26).toInt(), Gravity.CENTER)
             setImageResource(materia.iconRes)
-            imageTintList = ColorStateList.valueOf(materia.accentColor)
+            imageTintList = ColorStateList.valueOf(Color.WHITE)
+        }
+        iconCircle.addView(iconView)
+
+        // Push name to the bottom
+        val spacer = View(context).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT, 0, 1f
+            )
         }
 
-        val name = TextView(context).apply {
-            text = materia.name
-            setTextColor(materia.accentColor)
+        val nameView = TextView(context).apply {
+            text = subjectName
+            setTextColor(Color.WHITE)
             setTypeface(typeface, Typeface.BOLD)
-            textSize = 14f
-            gravity = Gravity.CENTER
+            textSize = 15f
+            maxLines = 2
+            layoutParams = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+        }
+
+        val hintView = TextView(context).apply {
+            text = "Ver apuntes →"
+            setTextColor(Color.argb(180, 255, 255, 255))
+            textSize = 11f
             val lp = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            lp.topMargin = dp(8).toInt()
-            lp.leftMargin = dp(8).toInt()
-            lp.rightMargin = dp(8).toInt()
+            lp.topMargin = dp(2).toInt()
             layoutParams = lp
         }
 
-        container.addView(icon)
-        container.addView(name)
-        card.addView(container)
+        content.addView(iconCircle)
+        content.addView(spacer)
+        content.addView(nameView)
+        content.addView(hintView)
+
+        frame.addView(decorCircle)
+        frame.addView(content)
+        card.addView(frame)
+
+        card.setOnClickListener {
+            (activity as? MainActivity)?.replaceMainFragment(
+                ApuntesFragment.newInstance(subjectId, subjectName)
+            )
+        }
+
+        card.setOnLongClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Eliminar materia")
+                .setMessage("¿Seguro que quieres eliminar \"$subjectName\"?")
+                .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteSubject(subjectId) }
+                .setNegativeButton("Cancelar", null)
+                .show()
+            true
+        }
+
         grid.addView(card, params)
     }
 
@@ -217,8 +286,7 @@ class MateriasFragment : Fragment() {
                 nameInput.requestFocus()
                 return@setOnClickListener
             }
-            // Persiste en Room; el Flow de getAll() emitirá la nueva lista automáticamente
-            viewModel.addMateria(MateriaEntity(name = name, iconIndex = iconIdx, colorIndex = colorIdx))
+            viewModel.addSubject(name, iconIdx, colorIdx)
             dialog.dismiss()
         }
 

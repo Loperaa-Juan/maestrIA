@@ -70,9 +70,10 @@
                             app:tint="@color/colorAccentPrimary"/>
 
                         <TextView
+                            android:id="@+id/tvSubjectCount"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="4"
+                            android:text="0"
                             android:textColor="@color/colorTextPrimary"
                             android:textSize="20sp"
                             android:textStyle="bold"
@@ -111,9 +112,10 @@
                             app:tint="@color/colorAccentPrimary"/>
 
                         <TextView
+                            android:id="@+id/tvNotesCount"
                             android:layout_height="wrap_content"
                             android:layout_width="wrap_content"
-                            android:text="5"
+                            android:text="0"
                             android:textSize="20sp"
                             android:textStyle="bold"
                             android:textColor="@color/colorTextPrimary"
