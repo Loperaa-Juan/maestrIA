@@ -42,9 +42,21 @@ class ApuntesFragment : Fragment() {
 
     private val viewModel: ApuntesViewModel by viewModels()
     private var subjectSnapshot: List<Subject> = emptyList()
-    private val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat("d MMM", Locale("es"))
 
     companion object {
+        private const val ARG_SUBJECT_ID = "subject_id"
+        private const val ARG_SUBJECT_NAME = "subject_name"
+
+        fun newInstance(subjectId: String, subjectName: String): ApuntesFragment {
+            return ApuntesFragment().apply {
+                arguments = android.os.Bundle().also {
+                    it.putString(ARG_SUBJECT_ID, subjectId)
+                    it.putString(ARG_SUBJECT_NAME, subjectName)
+                }
+            }
+        }
+
         private val accentColors = listOf(
             Color.parseColor("#1565C0"),
             Color.parseColor("#2E7D32"),
@@ -53,8 +65,6 @@ class ApuntesFragment : Fragment() {
             Color.parseColor("#6A1B9A"),
             Color.parseColor("#00838F")
         )
-        private val chipBg = Color.parseColor("#EDE9FE")
-        private val chipText = Color.parseColor("#5B21B6")
     }
 
     override fun onCreateView(
@@ -67,7 +77,22 @@ class ApuntesFragment : Fragment() {
 
         val list = view.findViewById<LinearLayout>(R.id.apuntesList)
         val tvFilter = view.findViewById<TextView>(R.id.tvSubjectFilter)
+        val tvTitle = view.findViewById<TextView>(R.id.tvApuntesTitle)
+        val tvSubtitle = view.findViewById<TextView>(R.id.tvApuntesSubtitle)
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
+
+        val argSubjectId = arguments?.getString(ARG_SUBJECT_ID)
+        val argSubjectName = arguments?.getString(ARG_SUBJECT_NAME)
+
+        if (argSubjectId != null) viewModel.filterBySubject(argSubjectId)
+        if (argSubjectName != null) tvTitle.text = "Apuntes de $argSubjectName"
+
+        // Style filter as a pill chip
+        tvFilter.background = GradientDrawable().apply {
+            setColor(Color.parseColor("#EDE9FE"))
+            cornerRadius = dp(24f)
+        }
+        tvFilter.setPadding(dp(14).toInt(), dp(8).toInt(), dp(14).toInt(), dp(8).toInt())
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -89,6 +114,11 @@ class ApuntesFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.notes.collect { notes ->
+                    tvSubtitle.text = when (notes.size) {
+                        0 -> "Sin apuntes aún"
+                        1 -> "1 apunte"
+                        else -> "${notes.size} apuntes"
+                    }
                     list.removeAllViews()
                     notes.forEach { note -> addNoteCard(list, note) }
                     if (notes.size > lastCount && lastCount >= 0) {
@@ -105,9 +135,19 @@ class ApuntesFragment : Fragment() {
 
     private fun addNoteCard(container: LinearLayout, note: Note) {
         val context = container.context
+
+        val subjectAccent = subjectSnapshot.find { it.id == note.subjectId }
+            ?.let { accentColors.getOrElse(it.colorIndex) { accentColors[0] } }
+            ?: accentColors[4]
+
+        val cardBg = context.getColor(R.color.colorCardBackground)
+        val textPrimary = context.getColor(R.color.colorTextPrimary)
+        val textSecondary = context.getColor(R.color.colorTextSecondary)
+
         val card = CardView(context).apply {
-            radius = dp(12f)
-            cardElevation = dp(2f)
+            radius = dp(16f)
+            cardElevation = dp(3f)
+            setCardBackgroundColor(cardBg)
             val lp = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -116,17 +156,27 @@ class ApuntesFragment : Fragment() {
             layoutParams = lp
         }
 
-        val inner = LinearLayout(context).apply {
+        // Horizontal root: color bar | content
+        val outer = LinearLayout(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            orientation = LinearLayout.VERTICAL
-            setPadding(dp(12).toInt(), dp(12).toInt(), dp(12).toInt(), dp(12).toInt())
+            orientation = LinearLayout.HORIZONTAL
         }
-        inner.setBackgroundResource(android.R.color.white)
 
-        // Row 1: title + delete icon
+        val colorBar = View(context).apply {
+            layoutParams = LinearLayout.LayoutParams(dp(4).toInt(), ViewGroup.LayoutParams.MATCH_PARENT)
+            setBackgroundColor(subjectAccent)
+        }
+
+        val inner = LinearLayout(context).apply {
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+            orientation = LinearLayout.VERTICAL
+            setPadding(dp(14).toInt(), dp(14).toInt(), dp(14).toInt(), dp(12).toInt())
+        }
+
+        // Row 1: title + soft delete icon
         val row1 = LinearLayout(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -137,15 +187,17 @@ class ApuntesFragment : Fragment() {
         }
         val titleView = TextView(context).apply {
             text = note.title
-            setTextColor(Color.parseColor("#1F2937"))
+            setTextColor(textPrimary)
             setTypeface(typeface, Typeface.BOLD)
             textSize = 15f
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
         val deleteBtn = ImageView(context).apply {
-            layoutParams = LinearLayout.LayoutParams(dp(22).toInt(), dp(22).toInt())
+            val lp = LinearLayout.LayoutParams(dp(20).toInt(), dp(20).toInt())
+            lp.leftMargin = dp(8).toInt()
+            layoutParams = lp
             setImageResource(android.R.drawable.ic_menu_delete)
-            imageTintList = ColorStateList.valueOf(Color.parseColor("#EF4444"))
+            imageTintList = ColorStateList.valueOf(Color.parseColor("#D1D5DB"))
         }
         deleteBtn.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
@@ -158,13 +210,30 @@ class ApuntesFragment : Fragment() {
         row1.addView(titleView)
         row1.addView(deleteBtn)
 
-        // Row 2: subject chip + date
+        // Content preview (shown right below title)
+        val contentView = if (note.content.isNotBlank()) {
+            TextView(context).apply {
+                text = note.content
+                textSize = 13f
+                setTextColor(textSecondary)
+                maxLines = 2
+                ellipsize = android.text.TextUtils.TruncateAt.END
+                val lp = LinearLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+                lp.topMargin = dp(4).toInt()
+                layoutParams = lp
+            }
+        } else null
+
+        // Row 2: subject chip (subject color) + spacer + date
         val row2 = LinearLayout(context).apply {
             val lp = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
-            lp.topMargin = dp(6).toInt()
+            lp.topMargin = dp(10).toInt()
             layoutParams = lp
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
@@ -173,43 +242,43 @@ class ApuntesFragment : Fragment() {
             val chip = TextView(context).apply {
                 text = note.subjectName
                 textSize = 11f
-                setTextColor(chipText)
-                background = chipBackground()
-                setPadding(dp(8).toInt(), dp(2).toInt(), dp(8).toInt(), dp(2).toInt())
+                setTypeface(typeface, Typeface.BOLD)
+                setTextColor(subjectAccent)
+                background = GradientDrawable().apply {
+                    setColor(Color.argb(22,
+                        Color.red(subjectAccent),
+                        Color.green(subjectAccent),
+                        Color.blue(subjectAccent)))
+                    cornerRadius = dp(20f)
+                }
+                setPadding(dp(8).toInt(), dp(3).toInt(), dp(8).toInt(), dp(3).toInt())
                 val lp = LinearLayout.LayoutParams(
                     ViewGroup.LayoutParams.WRAP_CONTENT,
                     ViewGroup.LayoutParams.WRAP_CONTENT
                 )
-                lp.rightMargin = dp(8).toInt()
+                lp.rightMargin = dp(6).toInt()
                 layoutParams = lp
             }
             row2.addView(chip)
         }
+        val spacer = View(context).apply {
+            layoutParams = LinearLayout.LayoutParams(0, 1, 1f)
+        }
         val dateView = TextView(context).apply {
             text = dateFormat.format(Date(note.createdAt))
             textSize = 11f
-            setTextColor(Color.parseColor("#6B7280"))
+            setTextColor(textSecondary)
         }
+        row2.addView(spacer)
         row2.addView(dateView)
 
-        // Content preview
-        val contentView = TextView(context).apply {
-            text = note.content
-            textSize = 12f
-            setTextColor(Color.parseColor("#6B7280"))
-            maxLines = 2
-            val lp = LinearLayout.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT
-            )
-            lp.topMargin = dp(6).toInt()
-            layoutParams = lp
-        }
-
         inner.addView(row1)
+        if (contentView != null) inner.addView(contentView)
         inner.addView(row2)
-        if (note.content.isNotBlank()) inner.addView(contentView)
-        card.addView(inner)
+
+        outer.addView(colorBar)
+        outer.addView(inner)
+        card.addView(outer)
         container.addView(card, 0)
     }
 
@@ -303,13 +372,6 @@ class ApuntesFragment : Fragment() {
         confirmBtn.isEnabled = false
 
         dialog.show()
-    }
-
-    private fun chipBackground(): GradientDrawable {
-        return GradientDrawable().apply {
-            setColor(chipBg)
-            cornerRadius = dp(6f)
-        }
     }
 
     private fun subjectChipBackground(@ColorInt accent: Int, selected: Boolean): GradientDrawable {

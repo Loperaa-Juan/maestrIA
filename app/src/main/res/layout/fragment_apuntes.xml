@@ -19,6 +19,7 @@
             android:paddingBottom="100dp">
 
             <TextView
+                android:id="@+id/tvApuntesTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Mis Apuntes"
@@ -28,22 +29,23 @@
                 android:layout_marginBottom="4dp" />
 
             <TextView
+                android:id="@+id/tvApuntesSubtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Todos tus apuntes en un solo lugar"
                 android:textSize="13sp"
-                android:textColor="@color/colorTextStrong"
+                android:textColor="@color/colorTextSecondary"
                 android:layout_marginBottom="16dp" />
 
             <TextView
                 android:id="@+id/tvSubjectFilter"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Todas las materias ▾"
-                android:textSize="16sp"
+                android:textSize="13sp"
                 android:textStyle="bold"
-                android:paddingBottom="12dp"
-                android:textColor="@color/colorTextPrimary" />
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/colorAccentPurple" />
 
             <LinearLayout
                 android:id="@+id/apuntesList"
