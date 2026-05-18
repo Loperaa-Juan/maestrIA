@@ -30,9 +30,10 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
-import com.juanjoselopera.proy_prog_mobile.app.data.local.entity.MateriaEntity
+import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRight
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -80,22 +81,20 @@ class MateriasFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val grid = view.findViewById<GridLayout>(R.id.materiasGrid)
-        // -1 indica que todavía no se ha recibido ninguna emisión del Flow
         var lastCount = -1
 
-        // Observa el StateFlow de Room: se redibuja el grid cada vez que cambia la lista
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.materias.collect { entities ->
+                viewModel.subjects.collect { subjects ->
                     grid.removeAllViews()
-                    entities.forEach { entity -> addMateriaCard(grid, entity.toMateria()) }
-                    when {
-                        // Primera carga: anima todos los elementos del grid
-                        lastCount == -1 && entities.isNotEmpty() -> grid.animateChildrenSlideInFromRight()
-                        // Inserción nueva: anima solo la última tarjeta añadida
-                        entities.size > lastCount && lastCount >= 0 -> animateNewCard(grid.getChildAt(grid.childCount - 1))
+                    subjects.forEach { subject ->
+                        addMateriaCard(grid, subject.id, subject.toMateria(), subject.name)
                     }
-                    lastCount = entities.size
+                    when {
+                        lastCount == -1 && subjects.isNotEmpty() -> grid.animateChildrenSlideInFromRight()
+                        subjects.size > lastCount && lastCount >= 0 -> animateNewCard(grid.getChildAt(grid.childCount - 1))
+                    }
+                    lastCount = subjects.size
                 }
             }
         }
@@ -105,14 +104,13 @@ class MateriasFragment : Fragment() {
         }
     }
 
-    // Convierte la entidad de BD al modelo visual que usa el fragment para dibujar las tarjetas
-    private fun MateriaEntity.toMateria(): Materia {
+    private fun Subject.toMateria(): Materia {
         val icon = iconOptions.getOrElse(iconIndex) { iconOptions[0] }
         val pair = colorOptions.getOrElse(colorIndex) { colorOptions[0] }
         return Materia(name = name, iconRes = icon, bgColor = pair.bg, accentColor = pair.accent)
     }
 
-    private fun addMateriaCard(grid: GridLayout, materia: Materia) {
+    private fun addMateriaCard(grid: GridLayout, subjectId: String, materia: Materia, subjectName: String) {
         val context = grid.context
         val card = CardView(context).apply {
             radius = dp(16f)
@@ -160,6 +158,17 @@ class MateriasFragment : Fragment() {
         container.addView(icon)
         container.addView(name)
         card.addView(container)
+
+        card.setOnLongClickListener {
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle("Eliminar materia")
+                .setMessage("¿Seguro que quieres eliminar \"$subjectName\"?")
+                .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteSubject(subjectId) }
+                .setNegativeButton("Cancelar", null)
+                .show()
+            true
+        }
+
         grid.addView(card, params)
     }
 
@@ -217,8 +226,7 @@ class MateriasFragment : Fragment() {
                 nameInput.requestFocus()
                 return@setOnClickListener
             }
-            // Persiste en Room; el Flow de getAll() emitirá la nueva lista automáticamente
-            viewModel.addMateria(MateriaEntity(name = name, iconIndex = iconIdx, colorIndex = colorIdx))
+            viewModel.addSubject(name, iconIdx, colorIdx)
             dialog.dismiss()
         }
 
