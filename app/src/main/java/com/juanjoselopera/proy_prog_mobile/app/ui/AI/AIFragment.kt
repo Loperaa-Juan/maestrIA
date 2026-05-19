@@ -15,6 +15,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromBottom
 import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
 
@@ -87,9 +88,15 @@ class AIFragment : Fragment() {
         }
 
         view.findViewById<MaterialButton>(R.id.selectedAction)
-            .setOnClickListener { it.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
-                it.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
-            }.start() }
+            .setOnClickListener { btn ->
+                // Animar el botón y navegar a la herramienta seleccionada
+                btn.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
+                    btn.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+                }.start()
+                if (selectedCardId == R.id.cardResearch) {
+                    (requireActivity() as MainActivity).replaceMainFragment(DeepResearchFragment())
+                }
+            }
     }
 
     private fun animateHeroEntrance(hero: View) {
