@@ -104,12 +104,18 @@
         android:textStyle="bold"
         android:layout_marginBottom="8dp" />
 
-    <LinearLayout
-        android:id="@+id/colorPicker"
+    <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="22dp" />
+        android:scrollbars="none"
+        android:layout_marginBottom="22dp">
+
+        <LinearLayout
+            android:id="@+id/colorPicker"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" />
+    </HorizontalScrollView>
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnConfirm"

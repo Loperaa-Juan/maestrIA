@@ -14,15 +14,23 @@ class NoteRemoteDataSource @Inject constructor(
     private val auth: FirebaseAuth
 ) {
     private val notesCollection
-        get() = firestore.collection("users")
-            .document(auth.currentUser!!.uid)
-            .collection("notes")
+        get() = auth.currentUser?.uid?.let { uid ->
+            firestore.collection("users")
+                .document(uid)
+                .collection("notes")
+        }
 
     fun getNotes(subjectId: String? = null): Flow<List<NoteDto>> = callbackFlow {
+        val collection = notesCollection
+        if (collection == null) {
+            trySend(emptyList())
+            close()
+            return@callbackFlow
+        }
         val query = if (subjectId != null) {
-            notesCollection.whereEqualTo("subjectId", subjectId)
+            collection.whereEqualTo("subjectId", subjectId)
         } else {
-            notesCollection
+            collection
         }
         val listener = query.addSnapshotListener { snapshot, error ->
             if (error != null) { close(error); return@addSnapshotListener }
@@ -36,15 +44,18 @@ class NoteRemoteDataSource @Inject constructor(
 
     suspend fun addNote(note: Note): String {
         val dto = NoteDto.fromNote(note)
-        val docRef = notesCollection.add(dto).await()
+        val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
+        val docRef = collection.add(dto).await()
         return docRef.id
     }
 
     suspend fun updateNote(note: Note) {
-        notesCollection.document(note.id).set(NoteDto.fromNote(note)).await()
+        val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
+        collection.document(note.id).set(NoteDto.fromNote(note)).await()
     }
 
     suspend fun deleteNote(noteId: String) {
-        notesCollection.document(noteId).delete().await()
+        val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
+        collection.document(noteId).delete().await()
     }
 }

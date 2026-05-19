@@ -11,4 +11,5 @@
     <string name="login_failed">"Login failed"</string>
     <string name="auth_subtitle_login">Tus apuntes potenciados con IA</string>
     <string name="auth_subtitle_signup">Únete a MaestrIA hoy mismo</string>
+    <string name="ai_no_model">Sin modelo</string>
 </resources>

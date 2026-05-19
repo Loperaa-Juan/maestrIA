@@ -3,18 +3,27 @@ package com.juanjoselopera.proy_prog_mobile.app.ui.AI
 import android.animation.ValueAnimator
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.Typeface
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.OvershootInterpolator
+import android.widget.FrameLayout
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.annotation.DrawableRes
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.card.MaterialCardView
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.data.local.AIModelPrefs
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromBottom
 import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
 
@@ -66,8 +75,11 @@ class AIFragment : Fragment() {
         )
     }
 
+    private val availableModels: List<AIModel> = emptyList()
+
     private var pulseAnimator: ValueAnimator? = null
     private var selectedCardId: Int? = null
+    private var tvSelectedModel: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -87,9 +99,111 @@ class AIFragment : Fragment() {
         }
 
         view.findViewById<MaterialButton>(R.id.selectedAction)
-            .setOnClickListener { it.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
-                it.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
-            }.start() }
+            .setOnClickListener { btn ->
+                btn.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
+                    btn.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
+                }.start()
+                if (selectedCardId == R.id.cardResearch) {
+                    (requireActivity() as MainActivity).replaceMainFragment(DeepResearchFragment())
+                }
+            }
+
+        tvSelectedModel = view.findViewById(R.id.tvSelectedModel)
+        val savedName = AIModelPrefs.getSelectedName(requireContext())
+        tvSelectedModel?.text = savedName ?: getString(R.string.ai_no_model)
+
+        view.findViewById<View>(R.id.modelSelectorCard).setOnClickListener {
+            showModelPicker()
+        }
+    }
+
+    private fun showModelPicker() {
+        val ctx = requireContext()
+        val dialog = BottomSheetDialog(ctx)
+        val sheetView = LayoutInflater.from(ctx).inflate(R.layout.dialog_model_picker, null)
+        dialog.setContentView(sheetView)
+
+        val modelList = sheetView.findViewById<LinearLayout>(R.id.modelList)
+        val emptyState = sheetView.findViewById<View>(R.id.emptyState)
+
+        if (availableModels.isEmpty()) {
+            emptyState.visibility = View.VISIBLE
+        } else {
+            val selectedId = AIModelPrefs.getSelectedId(ctx)
+            availableModels.forEach { model ->
+                val row = buildModelRow(model, model.id == selectedId)
+                row.setOnClickListener {
+                    AIModelPrefs.save(ctx, model.id, model.name)
+                    tvSelectedModel?.text = model.name
+                    dialog.dismiss()
+                }
+                modelList.addView(row)
+            }
+        }
+
+        dialog.show()
+    }
+
+    private fun buildModelRow(model: AIModel, isSelected: Boolean): View {
+        val ctx = requireContext()
+        val dp = resources.displayMetrics.density
+
+        val row = LinearLayout(ctx).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding(0, (14 * dp).toInt(), 0, (14 * dp).toInt())
+            isClickable = true
+            isFocusable = true
+            setBackgroundResource(android.R.attr.selectableItemBackground)
+        }
+
+        val textBlock = LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+        }
+
+        val nameView = TextView(ctx).apply {
+            text = model.name
+            textSize = 14f
+            setTypeface(null, if (isSelected) Typeface.BOLD else Typeface.NORMAL)
+            setTextColor(ContextCompat.getColor(ctx, R.color.colorTextPrimary))
+        }
+
+        val providerView = TextView(ctx).apply {
+            text = model.provider
+            textSize = 12f
+            setTextColor(ContextCompat.getColor(ctx, R.color.colorTextSecondary))
+        }
+
+        textBlock.addView(nameView)
+        textBlock.addView(providerView)
+        row.addView(textBlock)
+
+        if (isSelected) {
+            val check = ImageView(ctx).apply {
+                setImageResource(R.drawable.ic_verified)
+                imageTintList = ColorStateList.valueOf(
+                    ContextCompat.getColor(ctx, R.color.colorAccentPurple)
+                )
+                layoutParams = LinearLayout.LayoutParams(
+                    (22 * dp).toInt(), (22 * dp).toInt()
+                )
+            }
+            row.addView(check)
+        }
+
+        val divider = View(ctx).apply {
+            layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.MATCH_PARENT, 1
+            ).also { it.topMargin = (14 * dp).toInt() }
+            setBackgroundColor(ContextCompat.getColor(ctx, R.color.colorDivider))
+        }
+
+        return LinearLayout(ctx).apply {
+            orientation = LinearLayout.VERTICAL
+            addView(row)
+            addView(divider)
+        }
     }
 
     private fun animateHeroEntrance(hero: View) {
@@ -164,6 +278,7 @@ class AIFragment : Fragment() {
     override fun onDestroyView() {
         pulseAnimator?.cancel()
         pulseAnimator = null
+        tvSelectedModel = null
         super.onDestroyView()
     }
 }

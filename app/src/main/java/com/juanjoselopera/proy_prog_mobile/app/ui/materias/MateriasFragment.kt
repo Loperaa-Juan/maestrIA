@@ -54,11 +54,19 @@ class MateriasFragment : Fragment() {
     companion object {
         private val iconOptions = listOf(
             R.drawable.ic_book,
+            R.drawable.ic_calculator,
+            R.drawable.ic_globe,
+            R.drawable.ic_history,
+            R.drawable.ic_science,
+            R.drawable.ic_music_note,
+            R.drawable.ic_palette,
+            R.drawable.ic_map_pin,
+            R.drawable.ic_code,
+            R.drawable.ic_leaf,
+            R.drawable.ic_trophy,
             R.drawable.ic_folder,
             R.drawable.ic_document,
-            R.drawable.ic_star,
-            android.R.drawable.ic_menu_agenda,
-            android.R.drawable.ic_menu_compass
+            R.drawable.ic_star
         )
 
         private val colorOptions = listOf(
@@ -67,7 +75,19 @@ class MateriasFragment : Fragment() {
             ColorPair(Color.parseColor("#FCE4EC"), Color.parseColor("#C2185B")),
             ColorPair(Color.parseColor("#FFF3E0"), Color.parseColor("#EF6C00")),
             ColorPair(Color.parseColor("#F3E5F5"), Color.parseColor("#6A1B9A")),
-            ColorPair(Color.parseColor("#E0F7FA"), Color.parseColor("#00838F"))
+            ColorPair(Color.parseColor("#E0F7FA"), Color.parseColor("#00838F")),
+            ColorPair(Color.parseColor("#FFEBEE"), Color.parseColor("#C62828")),
+            ColorPair(Color.parseColor("#E8EAF6"), Color.parseColor("#283593")),
+            ColorPair(Color.parseColor("#E0F2F1"), Color.parseColor("#00695C")),
+            ColorPair(Color.parseColor("#FFFDE7"), Color.parseColor("#F57F17")),
+            ColorPair(Color.parseColor("#EFEBE9"), Color.parseColor("#4E342E")),
+            ColorPair(Color.parseColor("#F5F5F5"), Color.parseColor("#424242")),
+            ColorPair(Color.parseColor("#FBE9E7"), Color.parseColor("#BF360C")),
+            ColorPair(Color.parseColor("#E1F5FE"), Color.parseColor("#0277BD")),
+            ColorPair(Color.parseColor("#F9FBE7"), Color.parseColor("#558B2F")),
+            ColorPair(Color.parseColor("#FFF8E1"), Color.parseColor("#FF6F00")),
+            ColorPair(Color.parseColor("#EDE7F6"), Color.parseColor("#4527A0")),
+            ColorPair(Color.parseColor("#ECEFF1"), Color.parseColor("#37474F"))
         )
     }
 

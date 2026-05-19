@@ -20,6 +20,64 @@
             android:orientation="vertical"
             android:padding="16dp">
 
+            <!-- Model Selector -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/modelSelectorCard"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="14dp"
+                android:clickable="true"
+                android:focusable="true"
+                app:cardCornerRadius="12dp"
+                app:cardElevation="0dp"
+                app:strokeColor="@color/colorDivider"
+                app:strokeWidth="1dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="48dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:background="@color/colorCardBackground"
+                    android:paddingStart="14dp"
+                    android:paddingEnd="10dp">
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@android:drawable/ic_menu_compass"
+                        app:tint="@color/colorAccentPurple"
+                        android:layout_marginEnd="10dp" />
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Modelo de IA"
+                        android:textColor="@color/colorTextSecondary"
+                        android:textSize="13sp" />
+
+                    <TextView
+                        android:id="@+id/tvSelectedModel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Sin modelo"
+                        android:textColor="@color/colorTextPrimary"
+                        android:textSize="13sp"
+                        android:textStyle="bold"
+                        android:maxWidth="160dp"
+                        android:ellipsize="end"
+                        android:singleLine="true"
+                        android:layout_marginEnd="4dp" />
+
+                    <ImageView
+                        android:layout_width="18dp"
+                        android:layout_height="18dp"
+                        android:src="@drawable/ic_expand_more"
+                        app:tint="@color/colorTextSecondary" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
             <!-- Hero -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/aiHeroCard"

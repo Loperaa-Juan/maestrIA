@@ -11,6 +11,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
@@ -41,13 +43,24 @@ class LandingFragment : Fragment() {
         val subjectsCard = view.findViewById<CardView>(R.id.SubjectsCard)
         val notesCard = view.findViewById<CardView>(R.id.notesCard)
         val keyIdeasCard = view.findViewById<CardView>(R.id.KeyIdeasCard)
-        val cardApuntes = view.findViewById<CardView>(R.id.CardApuntes)
+        val tvVerTodos = view.findViewById<TextView>(R.id.tvVerTodosApuntes)
+        val tvEmpty = view.findViewById<TextView>(R.id.tvEmptyRecentNotes)
+        val recycler = view.findViewById<RecyclerView>(R.id.recentNotesRecycler)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
         val userName = currentUser?.displayName?.takeIf { it.isNotBlank() }
             ?: currentUser?.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() }
             ?: "Usuario"
         tvWelcomeUser.text = "Hola, $userName 👋"
+
+        // Configura el RecyclerView con los últimos 5 apuntes
+        val recentNoteAdapter = RecentNoteAdapter { note ->
+            (activity as? MainActivity)?.replaceMainFragment(
+                ApuntesFragment.newInstance(note.subjectId, note.subjectName)
+            )
+        }
+        recycler.layoutManager = LinearLayoutManager(requireContext())
+        recycler.adapter = recentNoteAdapter
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -65,6 +78,26 @@ class LandingFragment : Fragment() {
             }
         }
 
+        // Actualiza los colores de los chips cuando cambian las materias
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.subjects.collect { subjects ->
+                    recentNoteAdapter.updateSubjects(subjects)
+                }
+            }
+        }
+
+        // Muestra los últimos 5 apuntes o el estado vacío si no hay ninguno
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.recentNotes.collect { notes ->
+                    recentNoteAdapter.submitList(notes)
+                    tvEmpty.visibility = if (notes.isEmpty()) View.VISIBLE else View.GONE
+                    recycler.visibility = if (notes.isEmpty()) View.GONE else View.VISIBLE
+                }
+            }
+        }
+
         subjectsCard.setOnClickListener {
             (activity as? MainActivity)?.replaceMainFragment(MateriasFragment())
         }
@@ -77,7 +110,7 @@ class LandingFragment : Fragment() {
             (activity as? MainActivity)?.replaceMainFragment(AIFragment())
         }
 
-        cardApuntes.setOnClickListener {
+        tvVerTodos.setOnClickListener {
             (activity as? MainActivity)?.replaceMainFragment(ApuntesFragment())
         }
 
