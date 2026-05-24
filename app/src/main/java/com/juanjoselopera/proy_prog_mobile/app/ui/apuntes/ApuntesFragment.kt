@@ -4,6 +4,7 @@ import android.content.res.ColorStateList
 import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
+import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -17,8 +18,10 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -29,10 +32,12 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -43,6 +48,24 @@ class ApuntesFragment : Fragment() {
     private val viewModel: ApuntesViewModel by viewModels()
     private var subjectSnapshot: List<Subject> = emptyList()
     private val dateFormat = SimpleDateFormat("d MMM", Locale("es"))
+    private var isFabMenuOpen = false
+    private var pendingPhotoUri: Uri? = null
+    private var pendingPhotoSubject: Subject? = null
+
+    private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
+        if (success) {
+            val uri = pendingPhotoUri ?: return@registerForActivityResult
+            val subject = pendingPhotoSubject ?: return@registerForActivityResult
+            val note = Note(
+                subjectId = subject.id,
+                subjectName = subject.name,
+                imageUri = uri.toString()
+            )
+            (activity as? MainActivity)?.replaceMainFragment(
+                NoteDetailFragment.newInstance(note, startInEditMode = true)
+            )
+        }
+    }
 
     companion object {
         private const val ARG_SUBJECT_ID = "subject_id"
@@ -80,6 +103,11 @@ class ApuntesFragment : Fragment() {
         val tvTitle = view.findViewById<TextView>(R.id.tvApuntesTitle)
         val tvSubtitle = view.findViewById<TextView>(R.id.tvApuntesSubtitle)
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddNote)
+        val fabCamera = view.findViewById<FloatingActionButton>(R.id.fabCamera)
+        val fabNote = view.findViewById<FloatingActionButton>(R.id.fabNote)
+        val fabRowCamera = view.findViewById<View>(R.id.fabRowCamera)
+        val fabRowNote = view.findViewById<View>(R.id.fabRowNote)
+        val scrim = view.findViewById<View>(R.id.fabScrim)
 
         val argSubjectId = arguments?.getString(ARG_SUBJECT_ID)
         val argSubjectName = arguments?.getString(ARG_SUBJECT_NAME)
@@ -87,7 +115,6 @@ class ApuntesFragment : Fragment() {
         if (argSubjectId != null) viewModel.filterBySubject(argSubjectId)
         if (argSubjectName != null) tvTitle.text = "Apuntes de $argSubjectName"
 
-        // Style filter as a pill chip
         tvFilter.background = GradientDrawable().apply {
             setColor(Color.parseColor("#EDE9FE"))
             cornerRadius = dp(24f)
@@ -121,17 +148,108 @@ class ApuntesFragment : Fragment() {
                     }
                     list.removeAllViews()
                     notes.forEach { note -> addNoteCard(list, note) }
-                    if (notes.size > lastCount && lastCount >= 0) {
-                        animateNewCard(list.getChildAt(0))
-                    }
+                    if (notes.size > lastCount && lastCount >= 0) animateNewCard(list.getChildAt(0))
                     lastCount = notes.size
                 }
             }
         }
 
         tvFilter.setOnClickListener { showSubjectFilterDialog(tvFilter) }
-        fab.setOnClickListener { showCreateNoteDialog() }
+
+        fab.setOnClickListener {
+            if (isFabMenuOpen) closeFabMenu(fab, fabRowCamera, fabRowNote, scrim)
+            else openFabMenu(fab, fabRowCamera, fabRowNote, scrim)
+        }
+
+        scrim.setOnClickListener { closeFabMenu(fab, fabRowCamera, fabRowNote, scrim) }
+
+        fabNote.setOnClickListener {
+            closeFabMenu(fab, fabRowCamera, fabRowNote, scrim)
+            showCreateNoteDialog()
+        }
+
+        fabCamera.setOnClickListener {
+            closeFabMenu(fab, fabRowCamera, fabRowNote, scrim)
+            showSubjectPickerThenCamera()
+        }
     }
+
+    // ── Speed-dial ───────────────────────────────────────────────────────────
+
+    private fun openFabMenu(
+        fab: FloatingActionButton,
+        rowCamera: View, rowNote: View, scrim: View
+    ) {
+        isFabMenuOpen = true
+        scrim.visibility = View.VISIBLE
+        scrim.animate().alpha(0.4f).setDuration(200).start()
+        animateRow(rowCamera, show = true, delay = 0L)
+        animateRow(rowNote, show = true, delay = 60L)
+        fab.animate().rotation(45f).setDuration(200).start()
+    }
+
+    private fun closeFabMenu(
+        fab: FloatingActionButton,
+        rowCamera: View, rowNote: View, scrim: View
+    ) {
+        isFabMenuOpen = false
+        scrim.animate().alpha(0f).setDuration(150)
+            .withEndAction { scrim.visibility = View.GONE }.start()
+        animateRow(rowNote, show = false, delay = 0L)
+        animateRow(rowCamera, show = false, delay = 60L)
+        fab.animate().rotation(0f).setDuration(200).start()
+    }
+
+    private fun animateRow(row: View, show: Boolean, delay: Long) {
+        if (show) {
+            row.visibility = View.VISIBLE
+            row.alpha = 0f
+            row.translationY = dp(20f)
+            row.animate().alpha(1f).translationY(0f)
+                .setStartDelay(delay).setDuration(200).start()
+        } else {
+            row.animate().alpha(0f).translationY(dp(20f))
+                .setStartDelay(delay).setDuration(150)
+                .withEndAction { row.visibility = View.GONE }.start()
+        }
+    }
+
+    // ── Camera flow ──────────────────────────────────────────────────────────
+
+    private fun showSubjectPickerThenCamera() {
+        val subjects = subjectSnapshot
+        if (subjects.isEmpty()) {
+            Toast.makeText(requireContext(), "Primero crea una materia", Toast.LENGTH_SHORT).show()
+            return
+        }
+        var selectedIdx = 0
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("¿A qué materia pertenece la foto?")
+            .setSingleChoiceItems(subjects.map { it.name }.toTypedArray(), 0) { _, which ->
+                selectedIdx = which
+            }
+            .setPositiveButton("Abrir cámara") { _, _ ->
+                pendingPhotoSubject = subjects[selectedIdx]
+                openCamera()
+            }
+            .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun openCamera() {
+        val context = requireContext()
+        val cameraDir = File(context.cacheDir, "camera").also { it.mkdirs() }
+        val photoFile = File(cameraDir, "photo_${System.currentTimeMillis()}.jpg")
+        val uri = FileProvider.getUriForFile(
+            context,
+            "com.juanjoselopera.proy_prog_mobile.fileprovider",
+            photoFile
+        )
+        pendingPhotoUri = uri
+        cameraLauncher.launch(uri)
+    }
+
+    // ── Note cards ───────────────────────────────────────────────────────────
 
     private fun addNoteCard(container: LinearLayout, note: Note) {
         val context = container.context
@@ -156,7 +274,6 @@ class ApuntesFragment : Fragment() {
             layoutParams = lp
         }
 
-        // Horizontal root: color bar | content
         val outer = LinearLayout(context).apply {
             layoutParams = ViewGroup.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -176,7 +293,6 @@ class ApuntesFragment : Fragment() {
             setPadding(dp(14).toInt(), dp(14).toInt(), dp(14).toInt(), dp(12).toInt())
         }
 
-        // Row 1: title + soft delete icon
         val row1 = LinearLayout(context).apply {
             layoutParams = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -210,7 +326,6 @@ class ApuntesFragment : Fragment() {
         row1.addView(titleView)
         row1.addView(deleteBtn)
 
-        // Content preview (shown right below title)
         val contentView = if (note.content.isNotBlank()) {
             TextView(context).apply {
                 text = note.content
@@ -227,7 +342,6 @@ class ApuntesFragment : Fragment() {
             }
         } else null
 
-        // Row 2: subject chip (subject color) + spacer + date
         val row2 = LinearLayout(context).apply {
             val lp = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
@@ -279,8 +393,17 @@ class ApuntesFragment : Fragment() {
         outer.addView(colorBar)
         outer.addView(inner)
         card.addView(outer)
+
+        card.setOnClickListener {
+            (activity as? MainActivity)?.replaceMainFragment(
+                NoteDetailFragment.newInstance(note)
+            )
+        }
+
         container.addView(card, 0)
     }
+
+    // ── Dialogs ──────────────────────────────────────────────────────────────
 
     private fun showSubjectFilterDialog(tvFilter: TextView) {
         val subjects = subjectSnapshot

@@ -18,6 +18,7 @@ import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.NoteDetailFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRight
 import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
@@ -56,7 +57,7 @@ class LandingFragment : Fragment() {
         // Configura el RecyclerView con los últimos 5 apuntes
         val recentNoteAdapter = RecentNoteAdapter { note ->
             (activity as? MainActivity)?.replaceMainFragment(
-                ApuntesFragment.newInstance(note.subjectId, note.subjectName)
+                NoteDetailFragment.newInstance(note)
             )
         }
         recycler.layoutManager = LinearLayoutManager(requireContext())
