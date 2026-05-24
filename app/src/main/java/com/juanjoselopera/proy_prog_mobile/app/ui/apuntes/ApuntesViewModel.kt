@@ -52,6 +52,16 @@ class ApuntesViewModel @Inject constructor(
         }
     }
 
+    fun saveNote(note: Note) {
+        viewModelScope.launch {
+            if (note.id.isEmpty()) {
+                noteRepository.addNote(note)
+            } else {
+                noteRepository.updateNote(note)
+            }
+        }
+    }
+
     fun updateNote(note: Note) {
         viewModelScope.launch { noteRepository.updateNote(note) }
     }

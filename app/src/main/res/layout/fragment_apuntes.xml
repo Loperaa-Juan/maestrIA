@@ -56,15 +56,109 @@
         </LinearLayout>
     </ScrollView>
 
-    <com.google.android.material.floatingactionbutton.FloatingActionButton
-        android:id="@+id/fabAddNote"
+    <!-- Speed-dial scrim -->
+    <View
+        android:id="@+id/fabScrim"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000000"
+        android:alpha="0"
+        android:visibility="gone"
+        android:clickable="true"
+        android:focusable="true" />
+
+    <!-- Speed-dial stack -->
+    <LinearLayout
+        android:id="@+id/fabSpeedDialContainer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
-        android:contentDescription="Crear apunte"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/colorAccentPurple"
-        app:tint="@color/white" />
+        android:orientation="vertical"
+        android:gravity="end">
+
+        <!-- Camera row -->
+        <LinearLayout
+            android:id="@+id/fabRowCamera"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:alpha="0"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Foto"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="13sp"
+                android:background="@color/colorCardBackground"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_marginEnd="12dp"
+                android:elevation="4dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabCamera"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Tomar foto"
+                android:src="@drawable/ic_camera"
+                app:fabSize="mini"
+                app:backgroundTint="@color/colorCardBackground"
+                app:tint="@color/colorAccentPurple" />
+        </LinearLayout>
+
+        <!-- Pencil (note) row -->
+        <LinearLayout
+            android:id="@+id/fabRowNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center_vertical"
+            android:layout_marginBottom="16dp"
+            android:alpha="0"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Apunte"
+                android:textColor="@color/colorTextPrimary"
+                android:textSize="13sp"
+                android:background="@color/colorCardBackground"
+                android:paddingStart="10dp"
+                android:paddingEnd="10dp"
+                android:paddingTop="4dp"
+                android:paddingBottom="4dp"
+                android:layout_marginEnd="12dp"
+                android:elevation="4dp" />
+
+            <com.google.android.material.floatingactionbutton.FloatingActionButton
+                android:id="@+id/fabNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:contentDescription="Crear apunte"
+                android:src="@android:drawable/ic_menu_edit"
+                app:fabSize="mini"
+                app:backgroundTint="@color/colorCardBackground"
+                app:tint="@color/colorAccentPurple" />
+        </LinearLayout>
+
+        <!-- Main FAB -->
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabAddNote"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="Crear"
+            android:src="@android:drawable/ic_input_add"
+            app:backgroundTint="@color/colorAccentPurple"
+            app:tint="@color/white" />
+
+    </LinearLayout>
 
 </FrameLayout>

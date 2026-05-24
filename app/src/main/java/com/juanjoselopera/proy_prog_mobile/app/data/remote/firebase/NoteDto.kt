@@ -9,7 +9,8 @@ data class NoteDto(
     val subjectId: String = "",
     val subjectName: String = "",
     val tags: List<String> = emptyList(),
-    val createdAt: Long = 0L
+    val createdAt: Long = 0L,
+    val imageUri: String? = null
 ) {
     fun toNote() = Note(
         id = id,
@@ -18,7 +19,8 @@ data class NoteDto(
         subjectId = subjectId,
         subjectName = subjectName,
         tags = tags,
-        createdAt = createdAt
+        createdAt = createdAt,
+        imageUri = imageUri
     )
 
     companion object {
@@ -29,7 +31,8 @@ data class NoteDto(
             subjectId = note.subjectId,
             subjectName = note.subjectName,
             tags = note.tags,
-            createdAt = note.createdAt
+            createdAt = note.createdAt,
+            imageUri = note.imageUri
         )
     }
 }
