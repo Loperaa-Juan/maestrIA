@@ -6,11 +6,16 @@ import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import com.juanjoselopera.proy_prog_mobile.app.domain.repository.NoteRepository
 import com.juanjoselopera.proy_prog_mobile.app.domain.repository.SubjectRepository
+import com.juanjoselopera.proy_prog_mobile.app.domain.usecase.ExtractTextUseCase
+import com.juanjoselopera.proy_prog_mobile.app.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
@@ -20,8 +25,27 @@ import javax.inject.Inject
 @HiltViewModel
 class ApuntesViewModel @Inject constructor(
     private val noteRepository: NoteRepository,
-    private val subjectRepository: SubjectRepository
+    private val subjectRepository: SubjectRepository,
+    private val extractTextUseCase: ExtractTextUseCase
 ) : ViewModel() {
+
+    private val _extractedText = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    val extractedText: SharedFlow<String> = _extractedText.asSharedFlow()
+
+    private val _extractLoading = MutableStateFlow(false)
+    val extractLoading: StateFlow<Boolean> = _extractLoading.asStateFlow()
+
+    fun extractTextFromImage(imageBytes: ByteArray, mimeType: String, model: String) {
+        viewModelScope.launch {
+            _extractLoading.value = true
+            when (val res = extractTextUseCase(imageBytes, mimeType, model)) {
+                is Resource.Success -> _extractedText.emit(res.data)
+                is Resource.Error -> _extractedText.emit("")
+                else -> Unit
+            }
+            _extractLoading.value = false
+        }
+    }
 
     val subjects: StateFlow<List<Subject>> = subjectRepository.getSubjects()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
