@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.app.domain.usecase.FirebaseSignUpUseCase
 import com.juanjoselopera.proy_prog_mobile.app.util.Resource
-import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -19,6 +18,7 @@ data class SignUpUiState(
     val isLoading: Boolean = false,
     val error: String? = null,
     val isSuccess: Boolean = false,
+    val isEmailSent: Boolean = false,
     val emailError: String? = null,
     val passwordError: String? = null,
     val confirmPasswordError: String? = null,
@@ -27,7 +27,6 @@ data class SignUpUiState(
 @HiltViewModel
 class SignUpViewModel @Inject constructor(
     private val signUpUseCase: FirebaseSignUpUseCase,
-    private val sessionManager: SessionManager,
     private val firebaseAuth: FirebaseAuth
 ) : ViewModel() {
 
@@ -44,10 +43,8 @@ class SignUpViewModel @Inject constructor(
                     _uiState.update { it.copy(isLoading = true, error = null) }
                 }
                 is Resource.Success -> {
-                    // Al registrarse correctamente se inicia sesión de inmediato y se persiste
-                    val uid = firebaseAuth.currentUser?.uid ?: ""
-                    sessionManager.saveSession(uid = uid, email = email)
-                    _uiState.update { it.copy(isLoading = false, isSuccess = true) }
+                    firebaseAuth.currentUser?.sendEmailVerification()
+                    _uiState.update { it.copy(isLoading = false, isEmailSent = true) }
                 }
                 is Resource.Error -> {
                     _uiState.update { it.copy(isLoading = false, error = resource.message) }

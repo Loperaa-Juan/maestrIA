@@ -160,10 +160,11 @@
                             android:contentDescription="Apuntes" />
 
                         <TextView
+                            android:id="@+id/tvStatNotes"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="12"
+                            android:text="0"
                             android:textColor="@color/colorTextStrong"
                             android:textSize="18sp"
                             android:textStyle="bold" />
@@ -203,10 +204,11 @@
                             android:contentDescription="Materias" />
 
                         <TextView
+                            android:id="@+id/tvStatSubjects"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginTop="6dp"
-                            android:text="4"
+                            android:text="0"
                             android:textColor="@color/colorTextStrong"
                             android:textSize="18sp"
                             android:textStyle="bold" />

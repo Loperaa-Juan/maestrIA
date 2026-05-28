@@ -55,211 +55,382 @@
         android:layout_height="1dp"
         android:background="@color/colorDivider" />
 
-    <ScrollView
+    <!-- Content area: form, loading, and result share this space -->
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        android:scrollbars="none">
+        android:layout_height="match_parent">
 
-        <LinearLayout
-            android:id="@+id/deepResearchContent"
+        <!-- Form (input) -->
+        <ScrollView
+            android:id="@+id/formScroll"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="16dp">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:scrollbars="none">
 
-            <TextView
+            <LinearLayout
+                android:id="@+id/deepResearchContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Elige cómo comenzar tu investigación"
-                android:textColor="@color/colorTextSecondary"
-                android:textSize="14sp"
-                android:layout_marginBottom="20dp" />
+                android:orientation="vertical"
+                android:padding="16dp">
 
-            <!-- Opción 1: Escribir el tema manualmente -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardWriteTopic"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeColor="#00000000"
-                app:strokeWidth="0dp">
-
-                <LinearLayout
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/colorCardBackground"
-                    android:padding="20dp">
+                    android:text="Elige cómo comenzar tu investigación"
+                    android:textColor="@color/colorTextSecondary"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="20dp" />
+
+                <!-- Opción 1: Escribir el tema manualmente -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardWriteTopic"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeColor="#00000000"
+                    app:strokeWidth="0dp">
 
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical"
-                        android:layout_marginBottom="16dp">
-
-                        <FrameLayout
-                            android:layout_width="44dp"
-                            android:layout_height="44dp"
-                            android:background="@drawable/bg_ai_icon_purple">
-
-                            <ImageView
-                                android:layout_width="24dp"
-                                android:layout_height="24dp"
-                                android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_edit"
-                                app:tint="@color/colorAccentPurple" />
-                        </FrameLayout>
+                        android:orientation="vertical"
+                        android:background="@color/colorCardBackground"
+                        android:padding="20dp">
 
                         <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:layout_marginStart="12dp"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="Escribe el tema"
-                                android:textColor="@color/colorTextPrimary"
-                                android:textSize="16sp"
-                                android:textStyle="bold" />
-
-                            <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="Ingresa el tema y generaremos una investigación completa"
-                                android:textColor="@color/colorTextSecondary"
-                                android:textSize="12sp"
-                                android:layout_marginTop="2dp" />
-                        </LinearLayout>
-                    </LinearLayout>
-
-                    <!-- Campo de texto para el tema -->
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/topicInputLayout"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Ej: Revolución Industrial, Fotosíntesis..."
-                        app:boxCornerRadiusBottomEnd="12dp"
-                        app:boxCornerRadiusBottomStart="12dp"
-                        app:boxCornerRadiusTopEnd="12dp"
-                        app:boxCornerRadiusTopStart="12dp"
-                        app:boxStrokeColor="@color/colorAccentPurple"
-                        app:hintTextColor="@color/colorTextSecondary">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/etTopic"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:inputType="text|textCapSentences"
-                            android:maxLines="1"
-                            android:textColor="@color/colorTextPrimary"
-                            android:textSize="14sp" />
-                    </com.google.android.material.textfield.TextInputLayout>
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_marginBottom="16dp">
 
-                    <!-- Botón para iniciar la investigación -->
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/btnInvestigate"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:text="Investigar"
-                        android:textAllCaps="false"
-                        android:textSize="15sp"
-                        app:cornerRadius="12dp"
-                        app:backgroundTint="@color/colorAccentPurple" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                            <FrameLayout
+                                android:layout_width="44dp"
+                                android:layout_height="44dp"
+                                android:background="@drawable/bg_ai_icon_purple">
 
-            <!-- Divisor "o" entre las dos opciones -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center_vertical"
-                android:layout_marginBottom="16dp">
+                                <ImageView
+                                    android:layout_width="24dp"
+                                    android:layout_height="24dp"
+                                    android:layout_gravity="center"
+                                    android:src="@android:drawable/ic_menu_edit"
+                                    app:tint="@color/colorAccentPurple" />
+                            </FrameLayout>
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorDivider" />
+                            <LinearLayout
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:layout_marginStart="12dp"
+                                android:orientation="vertical">
 
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="  o  "
-                    android:textColor="@color/colorTextSecondary"
-                    android:textSize="14sp" />
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="Escribe el tema"
+                                    android:textColor="@color/colorTextPrimary"
+                                    android:textSize="16sp"
+                                    android:textStyle="bold" />
 
-                <View
-                    android:layout_width="0dp"
-                    android:layout_height="1dp"
-                    android:layout_weight="1"
-                    android:background="@color/colorDivider" />
-            </LinearLayout>
+                                <TextView
+                                    android:layout_width="match_parent"
+                                    android:layout_height="wrap_content"
+                                    android:text="Ingresa el tema y generaremos una investigación completa"
+                                    android:textColor="@color/colorTextSecondary"
+                                    android:textSize="12sp"
+                                    android:layout_marginTop="2dp" />
+                            </LinearLayout>
+                        </LinearLayout>
 
-            <!-- Opción 2: Tomar foto de los apuntes -->
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardCamera"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:clickable="true"
-                android:focusable="true"
-                app:cardCornerRadius="16dp"
-                app:cardElevation="2dp"
-                app:strokeColor="#00000000"
-                app:strokeWidth="0dp">
+                        <!-- Campo de texto para el tema -->
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/topicInputLayout"
+                            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Ej: Revolución Industrial, Fotosíntesis..."
+                            app:boxCornerRadiusBottomEnd="12dp"
+                            app:boxCornerRadiusBottomStart="12dp"
+                            app:boxCornerRadiusTopEnd="12dp"
+                            app:boxCornerRadiusTopStart="12dp"
+                            app:boxStrokeColor="@color/colorAccentPurple"
+                            app:hintTextColor="@color/colorTextSecondary">
 
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/etTopic"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:inputType="text|textCapSentences"
+                                android:maxLines="1"
+                                android:textColor="@color/colorTextPrimary"
+                                android:textSize="14sp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <!-- Botón para iniciar la investigación -->
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnInvestigate"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="14dp"
+                            android:text="Investigar"
+                            android:textAllCaps="false"
+                            android:textSize="15sp"
+                            app:cornerRadius="12dp"
+                            app:backgroundTint="@color/colorAccentPurple" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Divisor "o" -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:background="@color/colorCardBackground"
-                    android:padding="24dp"
-                    android:gravity="center">
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="16dp">
 
-                    <!-- Icono de cámara grande -->
-                    <FrameLayout
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
-                        android:background="@drawable/bg_ai_icon_purple"
-                        android:layout_marginBottom="14dp">
-
-                        <ImageView
-                            android:layout_width="38dp"
-                            android:layout_height="38dp"
-                            android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_camera"
-                            app:tint="@color/colorAccentPurple" />
-                    </FrameLayout>
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorDivider" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Toma una foto de tus apuntes y haremos una Investigación Profunda"
-                        android:textColor="@color/colorTextPrimary"
-                        android:textSize="15sp"
-                        android:textStyle="bold"
-                        android:gravity="center"
-                        android:layout_marginBottom="6dp" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="Analiza tus notas físicas o digitales con la cámara"
+                        android:text="  o  "
                         android:textColor="@color/colorTextSecondary"
-                        android:textSize="12sp"
-                        android:gravity="center" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+                        android:textSize="14sp" />
 
+                    <View
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1"
+                        android:background="@color/colorDivider" />
+                </LinearLayout>
+
+                <!-- Opción 2: Elegir un apunte -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardChooseNote"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clickable="true"
+                    android:focusable="true"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeColor="#00000000"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:background="@color/colorCardBackground"
+                        android:padding="24dp"
+                        android:gravity="center">
+
+                        <FrameLayout
+                            android:layout_width="72dp"
+                            android:layout_height="72dp"
+                            android:background="@drawable/bg_ai_icon_purple"
+                            android:layout_marginBottom="14dp">
+
+                            <ImageView
+                                android:layout_width="38dp"
+                                android:layout_height="38dp"
+                                android:layout_gravity="center"
+                                android:src="@android:drawable/ic_menu_agenda"
+                                app:tint="@color/colorAccentPurple" />
+                        </FrameLayout>
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Elige uno de tus apuntes para investigar"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="15sp"
+                            android:textStyle="bold"
+                            android:gravity="center"
+                            android:layout_marginBottom="6dp" />
+
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Selecciona un apunte existente como punto de partida"
+                            android:textColor="@color/colorTextSecondary"
+                            android:textSize="12sp"
+                            android:gravity="center" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Loading state -->
+        <LinearLayout
+            android:id="@+id/loadingState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone">
+
+            <ProgressBar
+                android:layout_width="56dp"
+                android:layout_height="56dp"
+                android:indeterminateTint="@color/colorAccentPurple" />
+
+            <TextView
+                android:id="@+id/tvLoadingLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Investigando"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Esto puede tomar hasta 20 segundos"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="12sp"
+                android:alpha="0.7" />
         </LinearLayout>
-    </ScrollView>
+
+        <!-- Result section -->
+        <ScrollView
+            android:id="@+id/resultScroll"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="none"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:padding="16dp">
+
+                <!-- Research text card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorCardBackground"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Investigación"
+                            android:textColor="@color/colorAccentPurple"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp" />
+
+                        <TextView
+                            android:id="@+id/tvResearch"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textColor="@color/colorTextPrimary"
+                            android:textSize="15sp"
+                            android:lineSpacingMultiplier="1.5" />
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Sources card -->
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/sourcesCard"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="16dp"
+                    android:visibility="gone"
+                    app:cardCornerRadius="16dp"
+                    app:cardElevation="2dp"
+                    app:strokeWidth="0dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/colorCardBackground"
+                        android:orientation="vertical"
+                        android:padding="20dp">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Fuentes"
+                            android:textColor="@color/colorAccentPurple"
+                            android:textSize="13sp"
+                            android:textStyle="bold"
+                            android:layout_marginBottom="12dp" />
+
+                        <LinearLayout
+                            android:id="@+id/sourcesList"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical" />
+
+                    </LinearLayout>
+                </com.google.android.material.card.MaterialCardView>
+
+                <!-- Nueva búsqueda button -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNewSearch"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Nueva investigación"
+                    android:textAllCaps="false"
+                    android:textSize="15sp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:cornerRadius="12dp"
+                    app:strokeColor="@color/colorAccentPurple" />
+
+            </LinearLayout>
+        </ScrollView>
+
+        <!-- Error state -->
+        <LinearLayout
+            android:id="@+id/errorState"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:padding="32dp"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/tvError"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="15sp" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnRetry"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="Reintentar"
+                android:textAllCaps="false"
+                app:backgroundTint="@color/colorAccentPurple"
+                app:cornerRadius="12dp" />
+        </LinearLayout>
+
+    </FrameLayout>
+
 </LinearLayout>

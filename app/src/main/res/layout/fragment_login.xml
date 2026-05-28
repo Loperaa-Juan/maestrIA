@@ -49,10 +49,22 @@
             android:layout_width="match_parent"
             android:layout_height="50dp"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="8dp"
             android:text="Ingresar"
             android:textColor="@color/white"
             android:backgroundTint="@color/colorActionButton" />
+
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="12dp"
+            android:layout_marginBottom="4dp"
+            android:text="¿Olvidó su contraseña?"
+            android:textColor="@color/colorActionButton"
+            android:textSize="14sp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:padding="4dp" />
 
     </LinearLayout>
 

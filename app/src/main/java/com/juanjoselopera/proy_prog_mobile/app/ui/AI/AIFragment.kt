@@ -6,6 +6,7 @@ import android.graphics.Color
 import android.graphics.Typeface
 import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -75,7 +76,11 @@ class AIFragment : Fragment() {
         )
     }
 
-    private val availableModels: List<AIModel> = emptyList()
+    private val availableModels: List<AIModel> = listOf(
+        AIModel("gemini-2.5-flash", "Gemini 2.5 Flash", "Google"),
+        AIModel("gemini-2.5-pro", "Gemini 2.5 Pro", "Google"),
+        AIModel("gemini-2.5-flash-lite", "Gemini 2.5 Flash Lite", "Google"),
+    )
 
     private var pulseAnimator: ValueAnimator? = null
     private var selectedCardId: Int? = null
@@ -103,14 +108,21 @@ class AIFragment : Fragment() {
                 btn.animate().scaleX(0.94f).scaleY(0.94f).setDuration(80).withEndAction {
                     btn.animate().scaleX(1f).scaleY(1f).setDuration(120).start()
                 }.start()
-                if (selectedCardId == R.id.cardResearch) {
-                    (requireActivity() as MainActivity).replaceMainFragment(DeepResearchFragment())
+                val fragment = when (selectedCardId) {
+                    R.id.cardResearch -> DeepResearchFragment()
+                    R.id.cardQuestions -> NotePickerFragment.newInstance(ToolType.QUESTIONS)
+                    R.id.cardConcepts -> NotePickerFragment.newInstance(ToolType.CONCEPTS)
+                    R.id.cardSummary -> NotePickerFragment.newInstance(ToolType.SUMMARY)
+                    else -> return@setOnClickListener
                 }
+                (requireActivity() as MainActivity).replaceMainFragment(fragment)
             }
 
         tvSelectedModel = view.findViewById(R.id.tvSelectedModel)
-        val savedName = AIModelPrefs.getSelectedName(requireContext())
-        tvSelectedModel?.text = savedName ?: getString(R.string.ai_no_model)
+        val savedId = AIModelPrefs.getSelectedId(requireContext())
+        val current = availableModels.find { it.id == savedId } ?: availableModels.first()
+        AIModelPrefs.save(requireContext(), current.id, current.name)
+        tvSelectedModel?.text = current.name
 
         view.findViewById<View>(R.id.modelSelectorCard).setOnClickListener {
             showModelPicker()
@@ -131,8 +143,7 @@ class AIFragment : Fragment() {
         } else {
             val selectedId = AIModelPrefs.getSelectedId(ctx)
             availableModels.forEach { model ->
-                val row = buildModelRow(model, model.id == selectedId)
-                row.setOnClickListener {
+                val row = buildModelRow(model, model.id == selectedId) {
                     AIModelPrefs.save(ctx, model.id, model.name)
                     tvSelectedModel?.text = model.name
                     dialog.dismiss()
@@ -144,7 +155,7 @@ class AIFragment : Fragment() {
         dialog.show()
     }
 
-    private fun buildModelRow(model: AIModel, isSelected: Boolean): View {
+    private fun buildModelRow(model: AIModel, isSelected: Boolean, onClick: () -> Unit): View {
         val ctx = requireContext()
         val dp = resources.displayMetrics.density
 
@@ -154,7 +165,10 @@ class AIFragment : Fragment() {
             setPadding(0, (14 * dp).toInt(), 0, (14 * dp).toInt())
             isClickable = true
             isFocusable = true
-            setBackgroundResource(android.R.attr.selectableItemBackground)
+            val outValue = TypedValue()
+            ctx.theme.resolveAttribute(android.R.attr.selectableItemBackground, outValue, true)
+            setBackgroundResource(outValue.resourceId)
+            setOnClickListener { onClick() }
         }
 
         val textBlock = LinearLayout(ctx).apply {

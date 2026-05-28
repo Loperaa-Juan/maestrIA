@@ -16,6 +16,7 @@ navigation = "2.8.4"
 firebaseAuth = "23.1.0"
 firebaseBom = "33.7.0"
 googleServices = "4.4.2"
+crashlytics = "3.0.2"
 hilt = "2.52"
 room = "2.6.1"
 
@@ -45,4 +46,5 @@ kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-kapt = { id = "org.jetbrains.kotlin.kapt", version.ref = "kotlin" }
 navigation-safeargs = { id = "androidx.navigation.safeargs.kotlin", version.ref = "navigation" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "crashlytics" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }

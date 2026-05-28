@@ -44,6 +44,10 @@ class LoginFragment : Fragment() {
             val password = binding.userpassword.text.toString().trim()
             viewModel.login(email, password)
         }
+
+        binding.tvForgotPassword.setOnClickListener {
+            (activity as? MainActivity)?.replaceMainFragment(ForgotPasswordFragment(), true)
+        }
     }
 
     private fun initObservers() {

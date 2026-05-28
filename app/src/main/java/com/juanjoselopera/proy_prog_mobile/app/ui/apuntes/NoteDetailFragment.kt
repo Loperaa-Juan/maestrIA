@@ -15,13 +15,18 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.data.local.AIModelPrefs
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
@@ -31,6 +36,7 @@ import io.noties.markwon.syntax.Prism4jThemeDarkula
 import io.noties.markwon.syntax.Prism4jThemeDefault
 import io.noties.markwon.syntax.SyntaxHighlightPlugin
 import io.noties.prism4j.Prism4j
+import kotlinx.coroutines.launch
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -65,8 +71,8 @@ class NoteDetailFragment : Fragment() {
         if (success) {
             note = note?.copy(imageUri = uri.toString())
             refreshImage()
+            offerExtractText(uri)
         } else {
-            // Clean up the temp file so it doesn't accumulate in cache
             try { File(uri.path ?: return@registerForActivityResult).delete() } catch (_: Exception) {}
         }
     }
@@ -145,6 +151,20 @@ class NoteDetailFragment : Fragment() {
         }
 
         btnChangePhoto.setOnClickListener { openCamera() }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.extractedText.collect { text ->
+                    if (text.isNotBlank()) {
+                        val current = etContent.text?.toString() ?: ""
+                        etContent.setText(if (current.isBlank()) text else "$current\n\n$text")
+                        etContent.setSelection(etContent.text?.length ?: 0)
+                    } else {
+                        Snackbar.make(view, "No se pudo extraer el texto", Snackbar.LENGTH_SHORT).show()
+                    }
+                }
+            }
+        }
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -224,6 +244,28 @@ class NoteDetailFragment : Fragment() {
                 requireActivity().onBackPressedDispatcher.onBackPressed()
             }
             .setNegativeButton("Cancelar", null)
+            .show()
+    }
+
+    private fun offerExtractText(uri: Uri) {
+        if (!isEditMode) return
+        val model = AIModelPrefs.getSelectedId(requireContext()) ?: return
+
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle("Extraer texto")
+            .setMessage("¿Deseas extraer el texto de la imagen para agregarlo a la nota?")
+            .setPositiveButton("Extraer") { _, _ ->
+                try {
+                    val bytes = requireContext().contentResolver
+                        .openInputStream(uri)?.use { it.readBytes() }
+                        ?: throw Exception("Could not open image stream")
+                    Toast.makeText(requireContext(), "Extrayendo texto…", Toast.LENGTH_SHORT).show()
+                    viewModel.extractTextFromImage(bytes, "image/jpeg", model)
+                } catch (_: Exception) {
+                    Snackbar.make(requireView(), "No se pudo leer la imagen", Snackbar.LENGTH_SHORT).show()
+                }
+            }
+            .setNegativeButton("Solo adjuntar", null)
             .show()
     }
 

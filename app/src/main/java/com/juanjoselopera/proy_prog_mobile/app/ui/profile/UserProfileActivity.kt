@@ -7,11 +7,15 @@ import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.bumptech.glide.Glide
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.switchmaterial.SwitchMaterial
@@ -22,6 +26,7 @@ import com.juanjoselopera.proy_prog_mobile.app.util.PreferencesManager
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -33,6 +38,8 @@ class UserProfileActivity : AppCompatActivity() {
     @Inject lateinit var firebaseAuth: FirebaseAuth
     @Inject lateinit var preferencesManager: PreferencesManager
     @Inject lateinit var sessionManager: SessionManager
+
+    private val viewModel: UserProfileViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +57,7 @@ class UserProfileActivity : AppCompatActivity() {
 
         bindUser()
         bindDarkModeSwitch()
+        bindStats()
 
         findViewById<View>(R.id.btnEditAvatar).setOnClickListener {
             Toast.makeText(this, "Pronto podrás cambiar tu foto", Toast.LENGTH_SHORT).show()
@@ -61,6 +69,22 @@ class UserProfileActivity : AppCompatActivity() {
             val intent = Intent(this, MainActivity::class.java)
                 .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
+        }
+    }
+
+    private fun bindStats() {
+        val tvStatNotes = findViewById<TextView>(R.id.tvStatNotes)
+        val tvStatSubjects = findViewById<TextView>(R.id.tvStatSubjects)
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.noteCount.collect { tvStatNotes.text = it.toString() }
+            }
+        }
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.subjectCount.collect { tvStatSubjects.text = it.toString() }
+            }
         }
     }
 
