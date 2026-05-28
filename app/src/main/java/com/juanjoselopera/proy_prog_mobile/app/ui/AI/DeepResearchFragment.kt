@@ -70,6 +70,7 @@ class DeepResearchFragment : Fragment() {
         val errorState = view.findViewById<View>(R.id.errorState)
         val tvError = view.findViewById<TextView>(R.id.tvError)
         val tvResearch = view.findViewById<TextView>(R.id.tvResearch)
+        val markwon = MarkwonProvider.create(requireContext())
         val sourcesCard = view.findViewById<MaterialCardView>(R.id.sourcesCard)
         val sourcesList = view.findViewById<LinearLayout>(R.id.sourcesList)
         val btnNewSearch = view.findViewById<MaterialButton>(R.id.btnNewSearch)
@@ -123,7 +124,7 @@ class DeepResearchFragment : Fragment() {
                     state.error?.let { tvError.text = it }
 
                     state.result?.let { result ->
-                        tvResearch.text = result.research
+                        markwon.setMarkdown(tvResearch, result.research)
                         sourcesList.removeAllViews()
                         if (result.sources.isNotEmpty()) {
                             sourcesCard.visibility = View.VISIBLE

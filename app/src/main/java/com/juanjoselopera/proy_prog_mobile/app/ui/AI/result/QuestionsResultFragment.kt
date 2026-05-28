@@ -16,7 +16,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.QAItem
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.MarkwonProvider
 import dagger.hilt.android.AndroidEntryPoint
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -55,7 +57,8 @@ class QuestionsResultFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        val adapter = QuestionsAdapter()
+        val markwon = MarkwonProvider.create(requireContext())
+        val adapter = QuestionsAdapter(markwon)
         rvQuestions.layoutManager = LinearLayoutManager(requireContext())
         rvQuestions.adapter = adapter
 
@@ -80,7 +83,7 @@ class QuestionsResultFragment : Fragment() {
     }
 }
 
-class QuestionsAdapter : RecyclerView.Adapter<QuestionsAdapter.VH>() {
+class QuestionsAdapter(private val markwon: Markwon) : RecyclerView.Adapter<QuestionsAdapter.VH>() {
 
     private var items: List<QAItem> = emptyList()
     private val expanded = mutableSetOf<Int>()
@@ -97,8 +100,8 @@ class QuestionsAdapter : RecyclerView.Adapter<QuestionsAdapter.VH>() {
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
-        holder.tvQuestion.text = item.question
-        holder.tvAnswer.text = item.answer
+        markwon.setMarkdown(holder.tvQuestion, item.question)
+        markwon.setMarkdown(holder.tvAnswer, item.answer)
 
         val isExpanded = expanded.contains(position)
         holder.tvAnswer.visibility = if (isExpanded) View.VISIBLE else View.GONE

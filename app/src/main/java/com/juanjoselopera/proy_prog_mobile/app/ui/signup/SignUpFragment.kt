@@ -11,7 +11,6 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
-import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.databinding.FragmentSignUpBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -65,22 +64,14 @@ class SignUpFragment : Fragment() {
 
             btnRegistrar.isEnabled = !state.isLoading
 
-            if (state.isSuccess) {
-                Toast.makeText(requireContext(), "Registro exitoso", Toast.LENGTH_SHORT).show()
-                navigateToHome()
+            if (state.isEmailSent) {
+                (activity as? MainActivity)?.replaceMainFragment(EmailVerificationFragment(), true)
             }
 
             state.error?.let {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
                 viewModel.resetError()
             }
-        }
-    }
-
-    private fun navigateToHome() {
-        (activity as? MainActivity)?.let { mainActivity ->
-            mainActivity.setNavComponentsVisibility(true)
-            mainActivity.replaceMainFragment(LandingFragment(), false)
         }
     }
 

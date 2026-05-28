@@ -15,7 +15,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.ConceptItem
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.MarkwonProvider
 import dagger.hilt.android.AndroidEntryPoint
+import io.noties.markwon.Markwon
 import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
@@ -54,7 +56,8 @@ class ConceptsResultFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        val adapter = ConceptsAdapter()
+        val markwon = MarkwonProvider.create(requireContext())
+        val adapter = ConceptsAdapter(markwon)
         rvConcepts.layoutManager = LinearLayoutManager(requireContext())
         rvConcepts.adapter = adapter
 
@@ -79,7 +82,7 @@ class ConceptsResultFragment : Fragment() {
     }
 }
 
-class ConceptsAdapter : RecyclerView.Adapter<ConceptsAdapter.VH>() {
+class ConceptsAdapter(private val markwon: Markwon) : RecyclerView.Adapter<ConceptsAdapter.VH>() {
 
     private var items: List<ConceptItem> = emptyList()
 
@@ -95,8 +98,8 @@ class ConceptsAdapter : RecyclerView.Adapter<ConceptsAdapter.VH>() {
 
     override fun onBindViewHolder(holder: VH, position: Int) {
         val item = items[position]
-        holder.tvTerm.text = item.term
-        holder.tvDefinition.text = item.definition
+        markwon.setMarkdown(holder.tvTerm, item.term)
+        markwon.setMarkdown(holder.tvDefinition, item.definition)
     }
 
     class VH(view: View) : RecyclerView.ViewHolder(view) {
