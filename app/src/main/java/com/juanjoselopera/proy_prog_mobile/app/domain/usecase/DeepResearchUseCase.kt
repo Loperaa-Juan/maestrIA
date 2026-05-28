@@ -10,9 +10,8 @@ class DeepResearchUseCase @Inject constructor(
 ) {
     suspend operator fun invoke(
         model: String,
-        topic: String?,
-        imageBytes: ByteArray?,
-        mimeType: String?
+        topic: String? = null,
+        note: String? = null
     ): Resource<DeepResearchResult> =
-        repository.deepResearch(model, topic, imageBytes, mimeType)
+        repository.deepResearch(model, topic, note)
 }

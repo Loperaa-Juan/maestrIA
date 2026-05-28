@@ -56,14 +56,20 @@ class ApuntesFragment : Fragment() {
         if (success) {
             val uri = pendingPhotoUri ?: return@registerForActivityResult
             val subject = pendingPhotoSubject ?: return@registerForActivityResult
-            val note = Note(
-                subjectId = subject.id,
-                subjectName = subject.name,
-                imageUri = uri.toString()
-            )
-            (activity as? MainActivity)?.replaceMainFragment(
-                NoteDetailFragment.newInstance(note, startInEditMode = true)
-            )
+            val model = com.juanjoselopera.proy_prog_mobile.app.data.local.AIModelPrefs.getSelectedId(requireContext())
+            if (model.isNullOrBlank()) {
+                Toast.makeText(requireContext(), "Selecciona un modelo de IA primero", Toast.LENGTH_SHORT).show()
+                return@registerForActivityResult
+            }
+            try {
+                val bytes = requireContext().contentResolver.openInputStream(uri)?.readBytes()
+                    ?: return@registerForActivityResult
+                (activity as? MainActivity)?.replaceMainFragment(
+                    ExtractTextFragment.newInstance(bytes, "image/jpeg", model, subject.id, subject.name)
+                )
+            } catch (e: Exception) {
+                Toast.makeText(requireContext(), "Error al leer la imagen", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 

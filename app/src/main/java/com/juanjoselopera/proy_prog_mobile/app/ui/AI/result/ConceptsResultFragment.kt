@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.button.MaterialButton
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.ConceptItem
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.LoadingDotsAnimator
 import com.juanjoselopera.proy_prog_mobile.app.ui.AI.MarkwonProvider
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
@@ -47,6 +48,8 @@ class ConceptsResultFragment : Fragment() {
         val model = arguments?.getString(ARG_MODEL) ?: ""
 
         val loadingState = view.findViewById<View>(R.id.loadingState)
+        val tvLoadingLabel = view.findViewById<TextView>(R.id.tvLoadingLabel)
+        val dotsAnimator = LoadingDotsAnimator(tvLoadingLabel, "Extrayendo conceptos")
         val errorState = view.findViewById<View>(R.id.errorState)
         val tvError = view.findViewById<TextView>(R.id.tvError)
         val btnRetry = view.findViewById<MaterialButton>(R.id.btnRetry)
@@ -67,6 +70,7 @@ class ConceptsResultFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     loadingState.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+                    if (state.isLoading) dotsAnimator.start() else dotsAnimator.stop()
                     errorState.visibility = if (state.error != null) View.VISIBLE else View.GONE
                     rvConcepts.visibility = if (state.concepts.isNotEmpty()) View.VISIBLE else View.GONE
 

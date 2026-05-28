@@ -1,7 +1,6 @@
 package com.juanjoselopera.proy_prog_mobile.app.ui.AI
 
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
 import android.graphics.Typeface
 import android.net.Uri
@@ -12,7 +11,6 @@ import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.ScrollView
 import android.widget.TextView
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -24,11 +22,11 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.data.local.AIModelPrefs
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.ResearchSource
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
-import java.io.ByteArrayOutputStream
 
 @AndroidEntryPoint
 class DeepResearchFragment : Fragment() {
@@ -36,24 +34,7 @@ class DeepResearchFragment : Fragment() {
     private val viewModel: DeepResearchViewModel by viewModels()
 
     private var lastTopic: String? = null
-    private var lastImageBytes: ByteArray? = null
-
-    private val takePictureLauncher = registerForActivityResult(
-        ActivityResultContracts.TakePicturePreview()
-    ) { bitmap: Bitmap? ->
-        if (bitmap != null) {
-            val stream = ByteArrayOutputStream()
-            bitmap.compress(Bitmap.CompressFormat.JPEG, 90, stream)
-            lastImageBytes = stream.toByteArray()
-            lastTopic = null
-            val model = AIModelPrefs.getSelectedId(requireContext())
-            if (model.isNullOrBlank()) {
-                Snackbar.make(requireView(), "Selecciona un modelo de IA primero", Snackbar.LENGTH_SHORT).show()
-                return@registerForActivityResult
-            }
-            viewModel.research(model, null, lastImageBytes, "image/jpeg")
-        }
-    }
+    private var lastNote: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -66,6 +47,8 @@ class DeepResearchFragment : Fragment() {
 
         val formScroll = view.findViewById<ScrollView>(R.id.formScroll)
         val loadingState = view.findViewById<View>(R.id.loadingState)
+        val tvLoadingLabel = view.findViewById<TextView>(R.id.tvLoadingLabel)
+        val dotsAnimator = LoadingDotsAnimator(tvLoadingLabel, "Investigando")
         val resultScroll = view.findViewById<ScrollView>(R.id.resultScroll)
         val errorState = view.findViewById<View>(R.id.errorState)
         val tvError = view.findViewById<TextView>(R.id.tvError)
@@ -95,12 +78,29 @@ class DeepResearchFragment : Fragment() {
                 return@setOnClickListener
             }
             lastTopic = tema
-            lastImageBytes = null
-            viewModel.research(model, tema, null, null)
+            lastNote = null
+            viewModel.researchTopic(model, tema)
         }
 
-        view.findViewById<MaterialCardView>(R.id.cardCamera).setOnClickListener {
-            takePictureLauncher.launch(null)
+        view.findViewById<MaterialCardView>(R.id.cardChooseNote).setOnClickListener {
+            parentFragmentManager.setFragmentResultListener(
+                NotePickerFragment.RESULT_KEY,
+                viewLifecycleOwner
+            ) { _, bundle ->
+                val noteContent = bundle.getString(NotePickerFragment.ARG_NOTE_CONTENT)
+                    ?: return@setFragmentResultListener
+                val model = AIModelPrefs.getSelectedId(requireContext())
+                if (model.isNullOrBlank()) {
+                    Snackbar.make(requireView(), "Selecciona un modelo de IA primero", Snackbar.LENGTH_SHORT).show()
+                    return@setFragmentResultListener
+                }
+                lastTopic = null
+                lastNote = noteContent
+                viewModel.researchNote(model, noteContent)
+            }
+            (activity as? MainActivity)?.replaceMainFragment(
+                NotePickerFragment.newInstance(ToolType.DEEP_RESEARCH), true
+            )
         }
 
         btnNewSearch.setOnClickListener {
@@ -110,7 +110,8 @@ class DeepResearchFragment : Fragment() {
 
         btnRetry.setOnClickListener {
             val model = AIModelPrefs.getSelectedId(requireContext()) ?: return@setOnClickListener
-            viewModel.research(model, lastTopic, lastImageBytes, if (lastImageBytes != null) "image/jpeg" else null)
+            if (lastNote != null) viewModel.researchNote(model, lastNote!!)
+            else if (lastTopic != null) viewModel.researchTopic(model, lastTopic!!)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -118,6 +119,7 @@ class DeepResearchFragment : Fragment() {
                 viewModel.uiState.collect { state ->
                     formScroll.visibility = if (!state.isLoading && state.result == null && state.error == null) View.VISIBLE else View.GONE
                     loadingState.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+                    if (state.isLoading) dotsAnimator.start() else dotsAnimator.stop()
                     resultScroll.visibility = if (state.result != null) View.VISIBLE else View.GONE
                     errorState.visibility = if (state.error != null) View.VISIBLE else View.GONE
 

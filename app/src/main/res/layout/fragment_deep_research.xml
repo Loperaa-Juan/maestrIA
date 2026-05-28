@@ -212,9 +212,9 @@
                         android:background="@color/colorDivider" />
                 </LinearLayout>
 
-                <!-- Opción 2: Tomar foto de los apuntes -->
+                <!-- Opción 2: Elegir un apunte -->
                 <com.google.android.material.card.MaterialCardView
-                    android:id="@+id/cardCamera"
+                    android:id="@+id/cardChooseNote"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:clickable="true"
@@ -242,14 +242,14 @@
                                 android:layout_width="38dp"
                                 android:layout_height="38dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_camera"
+                                android:src="@android:drawable/ic_menu_agenda"
                                 app:tint="@color/colorAccentPurple" />
                         </FrameLayout>
 
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Toma una foto de tus apuntes y haremos una Investigación Profunda"
+                            android:text="Elige uno de tus apuntes para investigar"
                             android:textColor="@color/colorTextPrimary"
                             android:textSize="15sp"
                             android:textStyle="bold"
@@ -259,7 +259,7 @@
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:text="Analiza tus notas físicas o digitales con la cámara"
+                            android:text="Selecciona un apunte existente como punto de partida"
                             android:textColor="@color/colorTextSecondary"
                             android:textSize="12sp"
                             android:gravity="center" />
@@ -284,12 +284,22 @@
                 android:indeterminateTint="@color/colorAccentPurple" />
 
             <TextView
+                android:id="@+id/tvLoadingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Investigando…"
+                android:text="Investigando"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Esto puede tomar hasta 20 segundos"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="12sp"
+                android:alpha="0.7" />
         </LinearLayout>
 
         <!-- Result section -->

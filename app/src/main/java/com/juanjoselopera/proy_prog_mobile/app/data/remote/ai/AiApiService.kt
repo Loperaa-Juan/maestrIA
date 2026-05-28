@@ -2,6 +2,7 @@ package com.juanjoselopera.proy_prog_mobile.app.data.remote.ai
 
 import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.ConceptsRequestDto
 import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.ConceptsResponseDto
+import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.DeepResearchRequestDto
 import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.DeepResearchResponseDto
 import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.ExtractTextResponseDto
 import com.juanjoselopera.proy_prog_mobile.app.data.remote.ai.dto.QuestionsRequestDto
@@ -33,11 +34,6 @@ interface AiApiService {
         @Part("model") model: RequestBody
     ): ExtractTextResponseDto
 
-    @Multipart
     @POST("api/deep-research")
-    suspend fun deepResearch(
-        @Part("model") model: RequestBody,
-        @Part("topic") topic: RequestBody?,
-        @Part image: MultipartBody.Part?
-    ): DeepResearchResponseDto
+    suspend fun deepResearch(@Body body: DeepResearchRequestDto): DeepResearchResponseDto
 }

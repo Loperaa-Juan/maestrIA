@@ -28,13 +28,21 @@ class DeepResearchViewModel @Inject constructor(
 
     private var isRunning = false
 
-    fun research(model: String, topic: String?, imageBytes: ByteArray?, mimeType: String?) {
+    fun researchTopic(model: String, topic: String) {
+        launch(model, topic = topic)
+    }
+
+    fun researchNote(model: String, note: String) {
+        launch(model, note = note)
+    }
+
+    private fun launch(model: String, topic: String? = null, note: String? = null) {
         if (isRunning) return
         isRunning = true
         _uiState.value = DeepResearchUiState(isLoading = true)
 
         viewModelScope.launch {
-            when (val res = deepResearchUseCase(model, topic, imageBytes, mimeType)) {
+            when (val res = deepResearchUseCase(model, topic, note)) {
                 is Resource.Success -> _uiState.value = DeepResearchUiState(result = res.data)
                 is Resource.Error -> _uiState.value = DeepResearchUiState(error = res.message)
                 else -> Unit

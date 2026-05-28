@@ -12,8 +12,7 @@ interface AiRepository {
     suspend fun extractText(imageBytes: ByteArray, mimeType: String, model: String): Resource<String>
     suspend fun deepResearch(
         model: String,
-        topic: String?,
-        imageBytes: ByteArray?,
-        mimeType: String?
+        topic: String? = null,
+        note: String? = null
     ): Resource<DeepResearchResult>
 }

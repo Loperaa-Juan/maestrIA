@@ -71,12 +71,22 @@
                 android:indeterminateTint="@color/colorAccentGreen" />
 
             <TextView
+                android:id="@+id/tvLoadingLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
-                android:text="Extrayendo conceptos…"
+                android:text="Extrayendo conceptos"
                 android:textColor="@color/colorTextSecondary"
                 android:textSize="15sp" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="6dp"
+                android:text="Esto puede tomar hasta 20 segundos"
+                android:textColor="@color/colorTextSecondary"
+                android:textSize="12sp"
+                android:alpha="0.7" />
         </LinearLayout>
 
         <LinearLayout

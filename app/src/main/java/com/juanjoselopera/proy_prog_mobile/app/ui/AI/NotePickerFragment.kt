@@ -36,6 +36,8 @@ class NotePickerFragment : Fragment() {
 
     companion object {
         private const val ARG_TOOL = "tool_type"
+        const val RESULT_KEY = "note_picker_result"
+        const val ARG_NOTE_CONTENT = "note_content"
 
         private val accentColors = listOf(
             Color.parseColor("#1565C0"),
@@ -70,6 +72,7 @@ class NotePickerFragment : Fragment() {
             ToolType.QUESTIONS -> "Elige la nota para generar preguntas"
             ToolType.CONCEPTS -> "Elige la nota para extraer conceptos"
             ToolType.SUMMARY -> "Elige la nota para resumir"
+            ToolType.DEEP_RESEARCH -> "Elige la nota para investigar"
         }
 
         val notesList = view.findViewById<LinearLayout>(R.id.notesList)
@@ -191,13 +194,23 @@ class NotePickerFragment : Fragment() {
     }
 
     private fun onNoteSelected(note: Note) {
+        if (note.content.isBlank()) {
+            Snackbar.make(requireView(), "Esta nota no tiene contenido para analizar", Snackbar.LENGTH_SHORT).show()
+            return
+        }
+
+        if (toolType == ToolType.DEEP_RESEARCH) {
+            parentFragmentManager.setFragmentResult(
+                RESULT_KEY,
+                Bundle().apply { putString(ARG_NOTE_CONTENT, note.content) }
+            )
+            parentFragmentManager.popBackStack()
+            return
+        }
+
         val model = AIModelPrefs.getSelectedId(requireContext())
         if (model.isNullOrBlank()) {
             Snackbar.make(requireView(), "Selecciona un modelo de IA primero", Snackbar.LENGTH_SHORT).show()
-            return
-        }
-        if (note.content.isBlank()) {
-            Snackbar.make(requireView(), "Esta nota no tiene contenido para analizar", Snackbar.LENGTH_SHORT).show()
             return
         }
 
@@ -205,6 +218,7 @@ class NotePickerFragment : Fragment() {
             ToolType.QUESTIONS -> QuestionsResultFragment.newInstance(note.content, model)
             ToolType.CONCEPTS -> ConceptsResultFragment.newInstance(note.content, model)
             ToolType.SUMMARY -> SummaryResultFragment.newInstance(note.content, model)
+            ToolType.DEEP_RESEARCH -> return
         }
         (requireActivity() as MainActivity).replaceMainFragment(resultFragment)
     }

@@ -15,6 +15,7 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.button.MaterialButton
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.LoadingDotsAnimator
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.GrammarLocatorDef
 import dagger.hilt.android.AndroidEntryPoint
 import io.noties.markwon.Markwon
@@ -53,6 +54,8 @@ class SummaryResultFragment : Fragment() {
         val model = arguments?.getString(ARG_MODEL) ?: ""
 
         val loadingState = view.findViewById<View>(R.id.loadingState)
+        val tvLoadingLabel = view.findViewById<TextView>(R.id.tvLoadingLabel)
+        val dotsAnimator = LoadingDotsAnimator(tvLoadingLabel, "Generando resumen")
         val errorState = view.findViewById<View>(R.id.errorState)
         val tvError = view.findViewById<TextView>(R.id.tvError)
         val btnRetry = view.findViewById<MaterialButton>(R.id.btnRetry)
@@ -79,6 +82,7 @@ class SummaryResultFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.uiState.collect { state ->
                     loadingState.visibility = if (state.isLoading) View.VISIBLE else View.GONE
+                    if (state.isLoading) dotsAnimator.start() else dotsAnimator.stop()
                     errorState.visibility = if (state.error != null) View.VISIBLE else View.GONE
                     summaryScroll.visibility = if (state.summary != null) View.VISIBLE else View.GONE
 
