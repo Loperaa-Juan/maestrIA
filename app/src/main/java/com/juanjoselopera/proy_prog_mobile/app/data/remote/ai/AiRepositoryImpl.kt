@@ -9,6 +9,7 @@ import com.juanjoselopera.proy_prog_mobile.app.domain.model.DeepResearchResult
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.QAItem
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.ResearchSource
 import com.juanjoselopera.proy_prog_mobile.app.domain.repository.AiRepository
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.juanjoselopera.proy_prog_mobile.app.util.Resource
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
@@ -63,6 +64,9 @@ class AiRepositoryImpl @Inject constructor(
     private fun <T> Result<T>.toResource(): Resource<T> =
         fold(
             onSuccess = { Resource.Success(it) },
-            onFailure = { Resource.Error(it.message ?: "Error desconocido") }
+            onFailure = { e ->
+                FirebaseCrashlytics.getInstance().recordException(e)
+                Resource.Error(e.message ?: "Error desconocido")
+            }
         )
 }

@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.navigation.safeargs)
     alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
     alias(libs.plugins.hilt)
     id("kotlin-parcelize")
 }
@@ -65,6 +66,7 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-crashlytics")
 
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 

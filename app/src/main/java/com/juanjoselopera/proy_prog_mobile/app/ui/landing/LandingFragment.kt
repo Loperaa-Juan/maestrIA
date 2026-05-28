@@ -41,7 +41,6 @@ class LandingFragment : Fragment() {
         val tvWelcomeUser = view.findViewById<TextView>(R.id.tvWelcomeUser)
         val tvSubjectCount = view.findViewById<TextView>(R.id.tvSubjectCount)
         val tvNotesCount = view.findViewById<TextView>(R.id.tvNotesCount)
-        val tvWordCount = view.findViewById<TextView>(R.id.tvWordCount)
         val subjectsCard = view.findViewById<CardView>(R.id.SubjectsCard)
         val notesCard = view.findViewById<CardView>(R.id.notesCard)
         val keyIdeasCard = view.findViewById<CardView>(R.id.KeyIdeasCard)
@@ -76,14 +75,6 @@ class LandingFragment : Fragment() {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.noteCount.collect { count ->
                     tvNotesCount.text = count.toString()
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.wordCount.collect { count ->
-                    tvWordCount.text = count.toString()
                 }
             }
         }

@@ -32,10 +32,6 @@ class LandingViewModel @Inject constructor(
         .map { notes -> notes.sortedByDescending { it.createdAt }.take(5) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
-    val wordCount: StateFlow<Int> = noteRepository.getNotes(null)
-        .map { notes -> notes.sumOf { note -> note.content.split("\\s+".toRegex()).count { it.isNotBlank() } } }
-        .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
-
     // Materias necesarias para obtener el color de acento de cada apunte
     val subjects: StateFlow<List<Subject>> = subjectRepository.getSubjects()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
