@@ -3,22 +3,235 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/mainActivity">
+    app:startDestination="@id/authFragment">
 
-    <activity
-        android:id="@+id/mainActivity"
-        android:name="com.juanjoselopera.proy_prog_mobile.app.MainActivity"
-        android:label="MainActivity" />
+    <!-- ══════════════════════════════════════════
+         FLUJO DE AUTENTICACIÓN
+    ══════════════════════════════════════════ -->
+
+    <!--
+        Contenedor de las pestañas Login / SignUp.
+        MainActivity lo muestra cuando no hay sesión activa.
+        Aloja LoginFragment y SignUpFragment como child fragments
+        via childFragmentManager (no como destinos de NavController).
+    -->
     <fragment
-        android:id="@+id/landingFragment"
-        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment"
-        android:label="LandingFragment" />
+        android:id="@+id/authFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment"
+        android:label="Autenticación"
+        tools:layout="@layout/fragment_auth">
+        <action
+            android:id="@+id/action_authFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:popUpTo="@id/authFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Formulario de inicio de sesión (child de AuthFragment, pestaña Login) -->
     <fragment
         android:id="@+id/loginFragment"
         android:name="com.juanjoselopera.proy_prog_mobile.app.ui.login.LoginFragment"
-        android:label="LoginFragment" >
+        android:label="Iniciar sesión"
+        tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_loginFragment_to_landingFragment"
-            app:destination="@id/landingFragment" />
+            app:destination="@id/landingFragment"
+            app:popUpTo="@id/authFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_loginFragment_to_forgotPasswordFragment"
+            app:destination="@id/forgotPasswordFragment" />
     </fragment>
+
+    <!-- Formulario de registro (child de AuthFragment, pestaña SignUp) -->
+    <fragment
+        android:id="@+id/signUpFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.signup.SignUpFragment"
+        android:label="Crear cuenta"
+        tools:layout="@layout/fragment_sign_up">
+        <action
+            android:id="@+id/action_signUpFragment_to_emailVerificationFragment"
+            app:destination="@id/emailVerificationFragment" />
+    </fragment>
+
+    <!-- Pantalla de espera mientras el usuario verifica su correo -->
+    <fragment
+        android:id="@+id/emailVerificationFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.signup.EmailVerificationFragment"
+        android:label="Verificar correo"
+        tools:layout="@layout/fragment_email_verification">
+        <action
+            android:id="@+id/action_emailVerificationFragment_to_landingFragment"
+            app:destination="@id/landingFragment"
+            app:popUpTo="@id/authFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- Formulario de recuperación de contraseña -->
+    <fragment
+        android:id="@+id/forgotPasswordFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.login.ForgotPasswordFragment"
+        android:label="Recuperar contraseña"
+        tools:layout="@layout/fragment_forgot_password" />
+
+    <!-- ══════════════════════════════════════════
+         FLUJO PRINCIPAL (usuario autenticado)
+    ══════════════════════════════════════════ -->
+
+    <!--
+        Pantalla de inicio: muestra estadísticas y los últimos 5 apuntes.
+        También es el destino al que apunta nav_home del BottomNavigationView.
+    -->
+    <fragment
+        android:id="@+id/landingFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment"
+        android:label="Inicio"
+        tools:layout="@layout/fragment_landing">
+        <action
+            android:id="@+id/action_landingFragment_to_materiasFragment"
+            app:destination="@id/materiasFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_apuntesFragment"
+            app:destination="@id/apuntesFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_aiFragment"
+            app:destination="@id/aiFragment" />
+        <action
+            android:id="@+id/action_landingFragment_to_noteDetailFragment"
+            app:destination="@id/noteDetailFragment" />
+    </fragment>
+
+    <!--
+        Lista de materias del usuario.
+        Accesible desde Landing (SubjectsCard) y desde el BottomNav (nav_subjects).
+    -->
+    <fragment
+        android:id="@+id/materiasFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment"
+        android:label="Materias"
+        tools:layout="@layout/fragment_materias">
+        <action
+            android:id="@+id/action_materiasFragment_to_apuntesFragment"
+            app:destination="@id/apuntesFragment" />
+    </fragment>
+
+    <!--
+        Lista de apuntes, opcionalmente filtrada por materia.
+        Accesible desde Landing, MateriasFragment y BottomNav (nav_notes).
+        Argumentos opcionales para filtrar por materia al venir desde MateriasFragment.
+    -->
+    <fragment
+        android:id="@+id/apuntesFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment"
+        android:label="Apuntes"
+        tools:layout="@layout/fragment_apuntes">
+        <argument
+            android:name="subject_id"
+            app:argType="string"
+            android:defaultValue="" />
+        <argument
+            android:name="subject_name"
+            app:argType="string"
+            android:defaultValue="" />
+        <action
+            android:id="@+id/action_apuntesFragment_to_noteDetailFragment"
+            app:destination="@id/noteDetailFragment" />
+        <action
+            android:id="@+id/action_apuntesFragment_to_extractTextFragment"
+            app:destination="@id/extractTextFragment" />
+    </fragment>
+
+    <!-- Vista de detalle de un apunte con renderizado Markdown + resaltado de código -->
+    <fragment
+        android:id="@+id/noteDetailFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.NoteDetailFragment"
+        android:label="Detalle del apunte"
+        tools:layout="@layout/fragment_note_detail" />
+
+    <!--
+        Pantalla de extracción de texto desde imagen (OCR).
+        Se llega desde ApuntesFragment tras capturar foto con la cámara.
+    -->
+    <fragment
+        android:id="@+id/extractTextFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ExtractTextFragment"
+        android:label="Extraer texto"
+        tools:layout="@layout/fragment_extract_text" />
+
+    <!-- ══════════════════════════════════════════
+         FLUJO DE INTELIGENCIA ARTIFICIAL
+    ══════════════════════════════════════════ -->
+
+    <!--
+        Menú de herramientas de IA: Deep Research, Preguntas, Conceptos, Resúmenes.
+        También muestra el selector de modelo (Gemini 2.5 Flash / Pro / Lite).
+        Accesible desde Landing (KeyIdeasCard) y BottomNav (nav_ai).
+    -->
+    <fragment
+        android:id="@+id/aiFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment"
+        android:label="Herramientas IA"
+        tools:layout="@layout/fragment_ai">
+        <action
+            android:id="@+id/action_aiFragment_to_deepResearchFragment"
+            app:destination="@id/deepResearchFragment" />
+        <action
+            android:id="@+id/action_aiFragment_to_notePickerFragment"
+            app:destination="@id/notePickerFragment" />
+    </fragment>
+
+    <!--
+        Investigación profunda: el usuario elige un apunte en DeepResearchFragment
+        y la IA genera un documento extendido sobre el tema.
+    -->
+    <fragment
+        android:id="@+id/deepResearchFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.DeepResearchFragment"
+        android:label="Deep Research"
+        tools:layout="@layout/fragment_deep_research" />
+
+    <!--
+        Selector de apunte previo a ejecutar una herramienta de IA.
+        Recibe el tipo de herramienta (QUESTIONS, CONCEPTS, SUMMARY) como argumento.
+    -->
+    <fragment
+        android:id="@+id/notePickerFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.NotePickerFragment"
+        android:label="Elegir apunte"
+        tools:layout="@layout/fragment_note_picker">
+        <argument
+            android:name="tool_type"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_notePickerFragment_to_summaryResultFragment"
+            app:destination="@id/summaryResultFragment" />
+        <action
+            android:id="@+id/action_notePickerFragment_to_conceptsResultFragment"
+            app:destination="@id/conceptsResultFragment" />
+        <action
+            android:id="@+id/action_notePickerFragment_to_questionsResultFragment"
+            app:destination="@id/questionsResultFragment" />
+    </fragment>
+
+    <!-- Resultado: resumen generado por IA sobre el apunte seleccionado -->
+    <fragment
+        android:id="@+id/summaryResultFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.result.SummaryResultFragment"
+        android:label="Resumen"
+        tools:layout="@layout/fragment_summary_result" />
+
+    <!-- Resultado: lista de conceptos clave extraídos del apunte -->
+    <fragment
+        android:id="@+id/conceptsResultFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.result.ConceptsResultFragment"
+        android:label="Conceptos"
+        tools:layout="@layout/fragment_concepts_result" />
+
+    <!-- Resultado: pares pregunta-respuesta generados para repasar el apunte -->
+    <fragment
+        android:id="@+id/questionsResultFragment"
+        android:name="com.juanjoselopera.proy_prog_mobile.app.ui.AI.result.QuestionsResultFragment"
+        android:label="Preguntas"
+        tools:layout="@layout/fragment_questions_result" />
+
 </navigation>
