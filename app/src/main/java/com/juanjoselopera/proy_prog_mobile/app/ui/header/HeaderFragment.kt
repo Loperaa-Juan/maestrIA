@@ -30,11 +30,13 @@ class HeaderFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        loadAvatar()
+        refreshAvatar()
     }
 
     // Refleja la foto de perfil (local u online) en el avatar del header.
-    private fun loadAvatar() {
+    // Público para poder refrescarlo al iniciar sesión (cuando el header ya
+    // existe pero su onResume corrió sin usuario).
+    fun refreshAvatar() {
         val iv = view?.findViewById<ImageView>(R.id.ivProfile) ?: return
         val context = iv.context
         val local = ProfileImageStore.existing(context)

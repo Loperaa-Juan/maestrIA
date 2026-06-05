@@ -10,6 +10,7 @@ import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.header.HeaderFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
@@ -60,6 +61,13 @@ class MainActivity : AppCompatActivity() {
         val visibility = if (visible) View.VISIBLE else View.GONE
         findViewById<View>(R.id.header_container)?.visibility = visibility
         findViewById<View>(R.id.menu_container)?.visibility = visibility
+
+        // Al entrar al área logueada, refresca el avatar del header: su onResume
+        // ya corrió sin sesión, así que hay que pedirle que cargue la foto.
+        if (visible) {
+            (supportFragmentManager.findFragmentById(R.id.header_container) as? HeaderFragment)
+                ?.refreshAvatar()
+        }
     }
 
     fun replaceMainFragment(fragment: Fragment, addToBackStack: Boolean = true) {
