@@ -23,11 +23,22 @@ class PreferencesManager @Inject constructor(
         get() = prefs.getString(KEY_LANGUAGE, "es") ?: "es"
         set(value) = prefs.edit { putString(KEY_LANGUAGE, value) }
 
+    // Cache local del perfil para mostrarlo al instante (offline)
+    var profileName: String?
+        get() = prefs.getString(KEY_PROFILE_NAME, null)
+        set(value) = prefs.edit { putString(KEY_PROFILE_NAME, value) }
+
+    var profilePhotoPath: String?
+        get() = prefs.getString(KEY_PROFILE_PHOTO, null)
+        set(value) = prefs.edit { putString(KEY_PROFILE_PHOTO, value) }
+
     fun clear() = prefs.edit { clear() }
 
     companion object {
         private const val PREFS_NAME = "maestria_prefs"
         private const val KEY_DARK_MODE = "dark_mode"
         private const val KEY_LANGUAGE = "language"
+        private const val KEY_PROFILE_NAME = "profile_name"
+        private const val KEY_PROFILE_PHOTO = "profile_photo_path"
     }
 }

@@ -60,6 +60,14 @@
                             android:contentDescription="Avatar"
                             app:tint="@color/colorAccentPrimary" />
 
+                        <ProgressBar
+                            android:id="@+id/avatarProgress"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:layout_gravity="center"
+                            android:visibility="gone"
+                            android:indeterminateTint="@color/colorAccentPrimary" />
+
                         <ImageView
                             android:id="@+id/btnEditAvatar"
                             android:layout_width="34dp"
@@ -292,22 +300,48 @@
                     android:orientation="vertical"
                     android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Nombre"
-                        android:textColor="@color/colorTextSecondary"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:id="@+id/tvFieldName"
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="2dp"
-                        android:text="—"
-                        android:textColor="@color/colorTextStrong"
-                        android:textSize="15sp"
-                        android:textStyle="bold" />
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Nombre"
+                                android:textColor="@color/colorTextSecondary"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:id="@+id/tvFieldName"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="2dp"
+                                android:text="—"
+                                android:textColor="@color/colorTextStrong"
+                                android:textSize="15sp"
+                                android:textStyle="bold" />
+                        </LinearLayout>
+
+                        <ImageView
+                            android:id="@+id/btnEditName"
+                            android:layout_width="40dp"
+                            android:layout_height="40dp"
+                            android:padding="9dp"
+                            android:src="@drawable/ic_edit"
+                            android:clickable="true"
+                            android:focusable="true"
+                            android:background="?attr/selectableItemBackgroundBorderless"
+                            android:contentDescription="Editar nombre"
+                            app:tint="@color/colorAccentPrimary" />
+                    </LinearLayout>
 
                     <View
                         android:layout_width="match_parent"
