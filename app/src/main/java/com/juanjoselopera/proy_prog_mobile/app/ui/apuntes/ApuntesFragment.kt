@@ -454,21 +454,120 @@ class ApuntesFragment : Fragment() {
     // ── Dialogs ──────────────────────────────────────────────────────────────
 
     private fun showSubjectFilterDialog(tvFilter: TextView) {
-        val subjects = subjectSnapshot
-        val items = arrayOf("Todas las materias") + subjects.map { it.name }.toTypedArray()
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filtrar por materia")
-            .setItems(items) { _, which ->
-                if (which == 0) {
-                    viewModel.filterBySubject(null)
-                    tvFilter.text = "Todas las materias ▾"
+        val context = requireContext()
+        val dialog = BottomSheetDialog(context)
+        val sheet = LayoutInflater.from(context).inflate(R.layout.dialog_subject_filter, null)
+        dialog.setContentView(sheet)
+
+        val container = sheet.findViewById<LinearLayout>(R.id.filterOptionsContainer)
+        val currentId = viewModel.selectedSubjectId.value
+
+        container.addView(
+            buildFilterRow(
+                label = "Todas las materias",
+                accent = context.getColor(R.color.colorIconMuted),
+                selected = currentId == null,
+                isAll = true
+            ) {
+                viewModel.filterBySubject(null)
+                tvFilter.text = "Todas las materias ▾"
+                dialog.dismiss()
+            }
+        )
+
+        subjectSnapshot.forEach { subject ->
+            val accent = accentColors.getOrElse(subject.colorIndex) { accentColors[0] }
+            container.addView(
+                buildFilterRow(
+                    label = subject.name,
+                    accent = accent,
+                    selected = subject.id == currentId,
+                    isAll = false
+                ) {
+                    viewModel.filterBySubject(subject.id)
+                    tvFilter.text = "${subject.name} ▾"
+                    dialog.dismiss()
+                }
+            )
+        }
+
+        dialog.show()
+    }
+
+    private fun buildFilterRow(
+        label: String,
+        @ColorInt accent: Int,
+        selected: Boolean,
+        isAll: Boolean,
+        onClick: () -> Unit
+    ): View {
+        val context = requireContext()
+        val row = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            val padV = dp(14).toInt()
+            setPadding(dp(12).toInt(), padV, dp(12).toInt(), padV)
+            val lp = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            lp.bottomMargin = dp(2).toInt()
+            layoutParams = lp
+            isClickable = true
+            isFocusable = true
+            background = if (selected) {
+                GradientDrawable().apply {
+                    setColor(Color.argb(28, Color.red(accent), Color.green(accent), Color.blue(accent)))
+                    cornerRadius = dp(14f)
+                }
+            } else {
+                selectableItemBackground(context, borderless = false)
+            }
+        }
+
+        val dot = View(context).apply {
+            val size = dp(14).toInt()
+            val lp = LinearLayout.LayoutParams(size, size)
+            lp.rightMargin = dp(14).toInt()
+            layoutParams = lp
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                if (isAll) {
+                    setColor(Color.TRANSPARENT)
+                    setStroke(dp(2).toInt(), accent)
                 } else {
-                    val selected = subjects[which - 1]
-                    viewModel.filterBySubject(selected.id)
-                    tvFilter.text = "${selected.name} ▾"
+                    setColor(accent)
                 }
             }
-            .show()
+        }
+
+        val name = TextView(context).apply {
+            text = label
+            textSize = 15f
+            setTextColor(context.getColor(R.color.colorTextPrimary))
+            setTypeface(typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+
+        row.addView(dot)
+        row.addView(name)
+
+        if (selected) {
+            val check = ImageView(context).apply {
+                val size = dp(20).toInt()
+                val lp = LinearLayout.LayoutParams(size, size)
+                lp.leftMargin = dp(8).toInt()
+                layoutParams = lp
+                setImageResource(R.drawable.ic_check)
+                imageTintList = ColorStateList.valueOf(
+                    if (isAll) context.getColor(R.color.colorTextPrimary) else accent
+                )
+            }
+            row.addView(check)
+        }
+
+        row.setOnClickListener { onClick() }
+        return row
     }
 
     private fun showCreateNoteDialog() {
