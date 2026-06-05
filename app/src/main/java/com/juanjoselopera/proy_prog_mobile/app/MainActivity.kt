@@ -4,10 +4,14 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
+import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
@@ -23,6 +27,13 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         applySlideInTransition()
         setContentView(R.layout.activity_main)
+
+        // Mantiene el tab del bottom nav en sincronía al usar el botón atrás
+        // (el pop del back stack no pasa por replaceMainFragment).
+        supportFragmentManager.addOnBackStackChangedListener {
+            supportFragmentManager.findFragmentById(R.id.main_content_container)
+                ?.let { syncNavSelection(it) }
+        }
 
         if (savedInstanceState == null) {
             val firebaseUser = FirebaseAuth.getInstance().currentUser
@@ -65,5 +76,26 @@ class MainActivity : AppCompatActivity() {
             transaction.addToBackStack(null)
         }
         transaction.commit()
+
+        syncNavSelection(fragment)
+    }
+
+    /**
+     * Mantiene el ítem activo del bottom nav en sincronía con el fragment mostrado,
+     * sin importar desde dónde se navegue (cards de Inicio, etc.). Usa isChecked para
+     * actualizar la selección visual sin disparar el listener (evita re-navegar).
+     */
+    private fun syncNavSelection(fragment: Fragment) {
+        val itemId = when (fragment) {
+            is LandingFragment -> R.id.nav_home
+            is MateriasFragment -> R.id.nav_subjects
+            is ApuntesFragment -> R.id.nav_notes
+            is AIFragment -> R.id.nav_ai
+            else -> return // pantallas que no son de nivel superior: deja el tab actual
+        }
+        val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav) ?: return
+        if (bottomNav.selectedItemId != itemId) {
+            bottomNav.menu.findItem(itemId)?.isChecked = true
+        }
     }
 }
