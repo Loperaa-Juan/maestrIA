@@ -45,7 +45,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_search"
+                android:src="@drawable/ic_search"
                 app:tint="@color/colorAccentPurple" />
         </FrameLayout>
     </LinearLayout>
@@ -117,7 +117,7 @@
                                     android:layout_width="24dp"
                                     android:layout_height="24dp"
                                     android:layout_gravity="center"
-                                    android:src="@android:drawable/ic_menu_edit"
+                                    android:src="@drawable/ic_edit"
                                     app:tint="@color/colorAccentPurple" />
                             </FrameLayout>
 
@@ -180,7 +180,7 @@
                             android:textAllCaps="false"
                             android:textSize="15sp"
                             app:cornerRadius="12dp"
-                            app:backgroundTint="@color/colorAccentPurple" />
+                            app:backgroundTint="@color/colorActionButton" />
                     </LinearLayout>
                 </com.google.android.material.card.MaterialCardView>
 
@@ -242,7 +242,7 @@
                                 android:layout_width="38dp"
                                 android:layout_height="38dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_agenda"
+                                android:src="@drawable/ic_summarize"
                                 app:tint="@color/colorAccentPurple" />
                         </FrameLayout>
 
@@ -427,7 +427,7 @@
                 android:layout_marginTop="16dp"
                 android:text="Reintentar"
                 android:textAllCaps="false"
-                app:backgroundTint="@color/colorAccentPurple"
+                app:backgroundTint="@color/colorActionButton"
                 app:cornerRadius="12dp" />
         </LinearLayout>
 

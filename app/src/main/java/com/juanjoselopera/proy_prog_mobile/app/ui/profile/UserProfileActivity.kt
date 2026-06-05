@@ -142,7 +142,7 @@ class UserProfileActivity : AppCompatActivity() {
         user.photoUrl?.let { photoUri ->
             Glide.with(this)
                 .load(photoUri)
-                .placeholder(android.R.drawable.ic_menu_myplaces)
+                .placeholder(R.drawable.ic_person)
                 .circleCrop()
                 .into(ivAvatar)
         }

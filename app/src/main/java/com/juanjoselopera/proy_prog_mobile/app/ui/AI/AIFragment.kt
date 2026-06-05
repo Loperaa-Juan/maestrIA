@@ -48,7 +48,7 @@ class AIFragment : Fragment() {
                 R.id.cardResearch,
                 "Deep Research",
                 "Investiga temas a fondo con fuentes verificadas y resúmenes contextualizados.",
-                android.R.drawable.ic_menu_search,
+                R.drawable.ic_search,
                 Color.parseColor("#7C3AED"),
                 R.drawable.bg_ai_icon_purple
             ),
@@ -56,7 +56,7 @@ class AIFragment : Fragment() {
                 R.id.cardQuestions,
                 "Preguntas",
                 "Genera cuestionarios automáticos para repasar antes de un examen.",
-                android.R.drawable.ic_menu_help,
+                R.drawable.ic_help,
                 Color.parseColor("#1D4ED8"),
                 R.drawable.bg_ai_icon_blue
             ),
@@ -64,7 +64,7 @@ class AIFragment : Fragment() {
                 R.id.cardConcepts,
                 "Conceptos",
                 "Identifica las ideas centrales y obtén explicaciones claras y breves.",
-                android.R.drawable.ic_menu_edit,
+                R.drawable.ic_edit,
                 Color.parseColor("#047857"),
                 R.drawable.bg_ai_icon_green
             ),
@@ -72,7 +72,7 @@ class AIFragment : Fragment() {
                 R.id.cardSummary,
                 "Resúmenes",
                 "Condensa tus apuntes largos en resúmenes accionables al instante.",
-                android.R.drawable.ic_menu_agenda,
+                R.drawable.ic_summarize,
                 Color.parseColor("#C2410C"),
                 R.drawable.bg_ai_icon_orange
             )

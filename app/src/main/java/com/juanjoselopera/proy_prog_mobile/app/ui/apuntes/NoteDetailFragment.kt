@@ -213,7 +213,7 @@ class NoteDetailFragment : Fragment() {
         tvContent.visibility = View.VISIBLE
         tilContent.visibility = View.GONE
         btnChangePhoto.visibility = View.GONE
-        fabEditSave.setImageResource(android.R.drawable.ic_menu_edit)
+        fabEditSave.setImageResource(R.drawable.ic_edit)
         renderNote()
     }
 

@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -51,6 +53,14 @@ class ApuntesFragment : Fragment() {
     private var isFabMenuOpen = false
     private var pendingPhotoUri: Uri? = null
     private var pendingPhotoSubject: Subject? = null
+
+    // Subject accent palette — theme-aware (light/dark resolved from resources).
+    private val accentColors: List<Int> by lazy {
+        val typed = resources.obtainTypedArray(R.array.subject_accents)
+        val colors = (0 until typed.length()).map { typed.getColor(it, Color.GRAY) }
+        typed.recycle()
+        colors
+    }
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -86,14 +96,6 @@ class ApuntesFragment : Fragment() {
             }
         }
 
-        private val accentColors = listOf(
-            Color.parseColor("#1565C0"),
-            Color.parseColor("#2E7D32"),
-            Color.parseColor("#C2185B"),
-            Color.parseColor("#EF6C00"),
-            Color.parseColor("#6A1B9A"),
-            Color.parseColor("#00838F")
-        )
     }
 
     override fun onCreateView(
@@ -123,7 +125,7 @@ class ApuntesFragment : Fragment() {
         if (argSubjectName != null) tvTitle.text = "Apuntes de $argSubjectName"
 
         tvFilter.background = GradientDrawable().apply {
-            setColor(Color.parseColor("#EDE9FE"))
+            setColor(view.context.getColor(R.color.colorFilterChipBackground))
             cornerRadius = dp(24f)
         }
         tvFilter.setPadding(dp(14).toInt(), dp(8).toInt(), dp(14).toInt(), dp(8).toInt())
@@ -286,6 +288,9 @@ class ApuntesFragment : Fragment() {
             radius = dp(16f)
             cardElevation = dp(3f)
             setCardBackgroundColor(cardBg)
+            isClickable = true
+            isFocusable = true
+            foreground = selectableItemBackground(context, borderless = false)
             val lp = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -329,11 +334,18 @@ class ApuntesFragment : Fragment() {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
         val deleteBtn = ImageView(context).apply {
-            val lp = LinearLayout.LayoutParams(dp(20).toInt(), dp(20).toInt())
-            lp.leftMargin = dp(8).toInt()
+            val touch = dp(48).toInt()
+            val lp = LinearLayout.LayoutParams(touch, touch)
+            lp.leftMargin = dp(4).toInt()
             layoutParams = lp
-            setImageResource(android.R.drawable.ic_menu_delete)
-            imageTintList = ColorStateList.valueOf(Color.parseColor("#D1D5DB"))
+            val pad = dp(12).toInt()
+            setPadding(pad, pad, pad, pad)
+            setImageResource(R.drawable.ic_delete)
+            imageTintList = ColorStateList.valueOf(context.getColor(R.color.colorIconMuted))
+            contentDescription = "Eliminar apunte"
+            isClickable = true
+            isFocusable = true
+            background = selectableItemBackground(context, borderless = true)
         }
         deleteBtn.setOnClickListener {
             MaterialAlertDialogBuilder(requireContext())
@@ -535,7 +547,7 @@ class ApuntesFragment : Fragment() {
 
     private fun subjectChipBackground(@ColorInt accent: Int, selected: Boolean): GradientDrawable {
         return GradientDrawable().apply {
-            setColor(if (selected) accent else Color.parseColor("#F3F4F6"))
+            setColor(if (selected) accent else requireContext().getColor(R.color.colorChipNeutralBackground))
             cornerRadius = dp(20f)
             if (!selected) setStroke(dp(1).toInt(), accent)
         }
@@ -552,6 +564,14 @@ class ApuntesFragment : Fragment() {
             .setDuration(300)
             .start()
     }
+
+    private fun selectableItemBackground(context: android.content.Context, borderless: Boolean) =
+        TypedValue().let { tv ->
+            val attr = if (borderless) android.R.attr.selectableItemBackgroundBorderless
+            else android.R.attr.selectableItemBackground
+            context.theme.resolveAttribute(attr, tv, true)
+            ContextCompat.getDrawable(context, tv.resourceId)
+        }
 
     private fun dp(value: Int): Float = dp(value.toFloat())
     private fun dp(value: Float): Float = value * resources.displayMetrics.density

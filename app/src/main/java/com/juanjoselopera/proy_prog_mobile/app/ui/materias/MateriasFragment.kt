@@ -367,8 +367,8 @@ class MateriasFragment : Fragment() {
     private fun iconSwatchBackground(selected: Boolean): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.OVAL
-            setColor(Color.parseColor("#F3F4F6"))
-            if (selected) setStroke(dp(2).toInt(), Color.parseColor("#7C3AED"))
+            setColor(requireContext().getColor(R.color.colorChipNeutralBackground))
+            if (selected) setStroke(dp(2).toInt(), requireContext().getColor(R.color.colorAccentPrimary))
         }
     }
 

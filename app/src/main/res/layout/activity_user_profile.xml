@@ -56,7 +56,7 @@
                             android:layout_height="match_parent"
                             android:background="@drawable/bg_avatar_white"
                             android:padding="22dp"
-                            android:src="@android:drawable/ic_menu_myplaces"
+                            android:src="@drawable/ic_person"
                             android:contentDescription="Avatar"
                             app:tint="@color/colorAccentPrimary" />
 

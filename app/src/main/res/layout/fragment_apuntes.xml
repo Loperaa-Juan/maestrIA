@@ -178,7 +178,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:contentDescription="Crear apunte"
-                android:src="@android:drawable/ic_menu_edit"
+                android:src="@drawable/ic_edit"
                 app:fabSize="mini"
                 app:backgroundTint="@color/colorCardBackground"
                 app:tint="@color/colorAccentPurple" />
@@ -190,8 +190,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:contentDescription="Crear"
-            android:src="@android:drawable/ic_input_add"
-            app:backgroundTint="@color/colorAccentPurple"
+            android:src="@drawable/ic_add"
+            app:backgroundTint="@color/colorAccentPrimary"
             app:tint="@color/white" />
 
     </LinearLayout>
