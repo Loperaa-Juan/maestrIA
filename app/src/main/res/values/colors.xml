@@ -44,6 +44,7 @@
     <color name="colorFilterChipBackground">#EDE9FE</color>
     <color name="colorChipNeutralBackground">#F3F4F6</color>
     <color name="colorIconMuted">#D1D5DB</color>
+    <color name="colorDangerContainer">#FDECEC</color>
 
     <!-- Subject accent palette — overridden in values-night/colors.xml -->
     <color name="colorSubjectAccent0">#1565C0</color>

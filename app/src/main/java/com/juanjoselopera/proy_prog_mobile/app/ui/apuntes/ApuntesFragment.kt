@@ -35,6 +35,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.ui.common.ConfirmDeleteDialog
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import dagger.hilt.android.AndroidEntryPoint
@@ -348,31 +349,15 @@ class ApuntesFragment : Fragment() {
             background = selectableItemBackground(context, borderless = true)
         }
         deleteBtn.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Eliminar apunte")
-                .setMessage("¿Seguro que quieres eliminar \"${note.title}\"?")
-                .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteNote(note.id) }
-                .setNegativeButton("Cancelar", null)
-                .show()
+            ConfirmDeleteDialog.show(
+                context = requireContext(),
+                title = "Eliminar apunte",
+                message = "¿Seguro que quieres eliminar \"${note.title}\"? Esta acción no se puede deshacer.",
+                onConfirm = { viewModel.deleteNote(note.id) }
+            )
         }
         row1.addView(titleView)
         row1.addView(deleteBtn)
-
-        val contentView = if (note.content.isNotBlank()) {
-            TextView(context).apply {
-                text = note.content
-                textSize = 13f
-                setTextColor(textSecondary)
-                maxLines = 2
-                ellipsize = android.text.TextUtils.TruncateAt.END
-                val lp = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                lp.topMargin = dp(4).toInt()
-                layoutParams = lp
-            }
-        } else null
 
         val row2 = LinearLayout(context).apply {
             val lp = LinearLayout.LayoutParams(
@@ -419,7 +404,6 @@ class ApuntesFragment : Fragment() {
         row2.addView(dateView)
 
         inner.addView(row1)
-        if (contentView != null) inner.addView(contentView)
         inner.addView(row2)
 
         outer.addView(colorBar)

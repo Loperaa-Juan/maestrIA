@@ -33,6 +33,7 @@
     <color name="colorFilterChipBackground">#2A2540</color>
     <color name="colorChipNeutralBackground">#2A2A2A</color>
     <color name="colorIconMuted">#5F6368</color>
+    <color name="colorDangerContainer">#3A2323</color>
 
     <!-- Subject accent palette — lightened/desaturated for dark backgrounds -->
     <color name="colorSubjectAccent0">#60A5FA</color>
