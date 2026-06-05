@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Subject accent palette. Colors resolve per theme (see values-night/colors.xml). -->
+    <array name="subject_accents">
+        <item>@color/colorSubjectAccent0</item>
+        <item>@color/colorSubjectAccent1</item>
+        <item>@color/colorSubjectAccent2</item>
+        <item>@color/colorSubjectAccent3</item>
+        <item>@color/colorSubjectAccent4</item>
+        <item>@color/colorSubjectAccent5</item>
+    </array>
+</resources>

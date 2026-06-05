@@ -43,7 +43,7 @@
                 android:layout_width="22dp"
                 android:layout_height="22dp"
                 android:layout_gravity="center"
-                android:src="@android:drawable/ic_menu_help"
+                android:src="@drawable/ic_help"
                 app:tint="@color/colorAccentBlueAlt" />
         </FrameLayout>
     </LinearLayout>

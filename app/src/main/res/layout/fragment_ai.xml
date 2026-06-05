@@ -45,7 +45,7 @@
                     <ImageView
                         android:layout_width="18dp"
                         android:layout_height="18dp"
-                        android:src="@android:drawable/ic_menu_compass"
+                        android:src="@drawable/ic_auto_awesome"
                         app:tint="@color/colorAccentPurple"
                         android:layout_marginEnd="10dp" />
 
@@ -105,7 +105,7 @@
                             android:layout_width="34dp"
                             android:layout_height="34dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_compass"
+                            android:src="@drawable/ic_auto_awesome"
                             app:tint="@color/white" />
                     </FrameLayout>
 
@@ -183,7 +183,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_search"
+                                android:src="@drawable/ic_search"
                                 app:tint="@color/colorAccentPurple" />
                         </FrameLayout>
 
@@ -236,7 +236,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_help"
+                                android:src="@drawable/ic_help"
                                 app:tint="@color/colorAccentBlueAlt" />
                         </FrameLayout>
 
@@ -289,7 +289,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_edit"
+                                android:src="@drawable/ic_edit"
                                 app:tint="@color/colorAccentGreen" />
                         </FrameLayout>
 
@@ -342,7 +342,7 @@
                                 android:layout_width="24dp"
                                 android:layout_height="24dp"
                                 android:layout_gravity="center"
-                                android:src="@android:drawable/ic_menu_agenda"
+                                android:src="@drawable/ic_summarize"
                                 app:tint="@color/colorAccentOrange" />
                         </FrameLayout>
 
@@ -395,7 +395,7 @@
                             android:layout_width="32dp"
                             android:layout_height="32dp"
                             android:layout_gravity="center"
-                            android:src="@android:drawable/ic_menu_compass"
+                            android:src="@drawable/ic_auto_awesome"
                             app:tint="@color/colorAccentPurple" />
                     </FrameLayout>
 
@@ -428,7 +428,7 @@
                         android:enabled="false"
                         android:layout_marginTop="14dp"
                         app:cornerRadius="22dp"
-                        app:backgroundTint="@color/colorAccentPurple" />
+                        app:backgroundTint="@color/colorActionButton" />
                 </LinearLayout>
             </androidx.cardview.widget.CardView>
 

@@ -28,4 +28,18 @@
     <color name="colorTagText">#C8C8C8</color>
     <color name="colorChipBlueBg">#1A2A45</color>
     <color name="colorChipBlueText">#90CAF9</color>
+
+    <!-- UI surface tokens (moved out of Kotlin hardcodes) -->
+    <color name="colorFilterChipBackground">#2A2540</color>
+    <color name="colorChipNeutralBackground">#2A2A2A</color>
+    <color name="colorIconMuted">#5F6368</color>
+    <color name="colorDangerContainer">#3A2323</color>
+
+    <!-- Subject accent palette — lightened/desaturated for dark backgrounds -->
+    <color name="colorSubjectAccent0">#60A5FA</color>
+    <color name="colorSubjectAccent1">#66BB6A</color>
+    <color name="colorSubjectAccent2">#F06292</color>
+    <color name="colorSubjectAccent3">#FFA726</color>
+    <color name="colorSubjectAccent4">#BA68C8</color>
+    <color name="colorSubjectAccent5">#4DD0E1</color>
 </resources>

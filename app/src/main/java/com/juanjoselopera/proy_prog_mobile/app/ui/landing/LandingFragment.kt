@@ -133,4 +133,14 @@ class LandingFragment : Fragment() {
 
         view.findFirstViewGroupById(R.id.landingContent)?.animateChildrenSlideInFromRight()
     }
+
+    override fun onResume() {
+        super.onResume()
+        // Refresca el saludo por si el usuario cambió su nombre en el perfil.
+        val user = FirebaseAuth.getInstance().currentUser ?: return
+        val userName = user.displayName?.takeIf { it.isNotBlank() }
+            ?: user.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() }
+            ?: "Usuario"
+        view?.findViewById<TextView>(R.id.tvWelcomeUser)?.text = "Hola, $userName 👋"
+    }
 }

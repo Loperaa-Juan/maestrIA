@@ -51,8 +51,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:contentDescription="Crear materia"
-        android:src="@android:drawable/ic_input_add"
-        app:backgroundTint="@color/colorAccentPurple"
+        android:src="@drawable/ic_add"
+        app:backgroundTint="@color/colorAccentPrimary"
         app:tint="@color/white" />
 
 </FrameLayout>

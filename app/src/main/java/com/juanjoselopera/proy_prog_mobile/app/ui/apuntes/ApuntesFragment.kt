@@ -8,6 +8,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -21,6 +22,7 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.ColorInt
 import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
@@ -33,6 +35,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
+import com.juanjoselopera.proy_prog_mobile.app.ui.common.ConfirmDeleteDialog
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import dagger.hilt.android.AndroidEntryPoint
@@ -51,6 +54,14 @@ class ApuntesFragment : Fragment() {
     private var isFabMenuOpen = false
     private var pendingPhotoUri: Uri? = null
     private var pendingPhotoSubject: Subject? = null
+
+    // Subject accent palette — theme-aware (light/dark resolved from resources).
+    private val accentColors: List<Int> by lazy {
+        val typed = resources.obtainTypedArray(R.array.subject_accents)
+        val colors = (0 until typed.length()).map { typed.getColor(it, Color.GRAY) }
+        typed.recycle()
+        colors
+    }
 
     private val cameraLauncher = registerForActivityResult(ActivityResultContracts.TakePicture()) { success ->
         if (success) {
@@ -86,14 +97,6 @@ class ApuntesFragment : Fragment() {
             }
         }
 
-        private val accentColors = listOf(
-            Color.parseColor("#1565C0"),
-            Color.parseColor("#2E7D32"),
-            Color.parseColor("#C2185B"),
-            Color.parseColor("#EF6C00"),
-            Color.parseColor("#6A1B9A"),
-            Color.parseColor("#00838F")
-        )
     }
 
     override fun onCreateView(
@@ -123,7 +126,7 @@ class ApuntesFragment : Fragment() {
         if (argSubjectName != null) tvTitle.text = "Apuntes de $argSubjectName"
 
         tvFilter.background = GradientDrawable().apply {
-            setColor(Color.parseColor("#EDE9FE"))
+            setColor(view.context.getColor(R.color.colorFilterChipBackground))
             cornerRadius = dp(24f)
         }
         tvFilter.setPadding(dp(14).toInt(), dp(8).toInt(), dp(14).toInt(), dp(8).toInt())
@@ -286,6 +289,9 @@ class ApuntesFragment : Fragment() {
             radius = dp(16f)
             cardElevation = dp(3f)
             setCardBackgroundColor(cardBg)
+            isClickable = true
+            isFocusable = true
+            foreground = selectableItemBackground(context, borderless = false)
             val lp = LinearLayout.LayoutParams(
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT
@@ -329,38 +335,29 @@ class ApuntesFragment : Fragment() {
             layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
         }
         val deleteBtn = ImageView(context).apply {
-            val lp = LinearLayout.LayoutParams(dp(20).toInt(), dp(20).toInt())
-            lp.leftMargin = dp(8).toInt()
+            val touch = dp(48).toInt()
+            val lp = LinearLayout.LayoutParams(touch, touch)
+            lp.leftMargin = dp(4).toInt()
             layoutParams = lp
-            setImageResource(android.R.drawable.ic_menu_delete)
-            imageTintList = ColorStateList.valueOf(Color.parseColor("#D1D5DB"))
+            val pad = dp(12).toInt()
+            setPadding(pad, pad, pad, pad)
+            setImageResource(R.drawable.ic_delete)
+            imageTintList = ColorStateList.valueOf(context.getColor(R.color.colorIconMuted))
+            contentDescription = "Eliminar apunte"
+            isClickable = true
+            isFocusable = true
+            background = selectableItemBackground(context, borderless = true)
         }
         deleteBtn.setOnClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Eliminar apunte")
-                .setMessage("¿Seguro que quieres eliminar \"${note.title}\"?")
-                .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteNote(note.id) }
-                .setNegativeButton("Cancelar", null)
-                .show()
+            ConfirmDeleteDialog.show(
+                context = requireContext(),
+                title = "Eliminar apunte",
+                message = "¿Seguro que quieres eliminar \"${note.title}\"? Esta acción no se puede deshacer.",
+                onConfirm = { viewModel.deleteNote(note.id) }
+            )
         }
         row1.addView(titleView)
         row1.addView(deleteBtn)
-
-        val contentView = if (note.content.isNotBlank()) {
-            TextView(context).apply {
-                text = note.content
-                textSize = 13f
-                setTextColor(textSecondary)
-                maxLines = 2
-                ellipsize = android.text.TextUtils.TruncateAt.END
-                val lp = LinearLayout.LayoutParams(
-                    ViewGroup.LayoutParams.MATCH_PARENT,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-                lp.topMargin = dp(4).toInt()
-                layoutParams = lp
-            }
-        } else null
 
         val row2 = LinearLayout(context).apply {
             val lp = LinearLayout.LayoutParams(
@@ -407,7 +404,6 @@ class ApuntesFragment : Fragment() {
         row2.addView(dateView)
 
         inner.addView(row1)
-        if (contentView != null) inner.addView(contentView)
         inner.addView(row2)
 
         outer.addView(colorBar)
@@ -442,21 +438,120 @@ class ApuntesFragment : Fragment() {
     // ── Dialogs ──────────────────────────────────────────────────────────────
 
     private fun showSubjectFilterDialog(tvFilter: TextView) {
-        val subjects = subjectSnapshot
-        val items = arrayOf("Todas las materias") + subjects.map { it.name }.toTypedArray()
-        MaterialAlertDialogBuilder(requireContext())
-            .setTitle("Filtrar por materia")
-            .setItems(items) { _, which ->
-                if (which == 0) {
-                    viewModel.filterBySubject(null)
-                    tvFilter.text = "Todas las materias ▾"
+        val context = requireContext()
+        val dialog = BottomSheetDialog(context)
+        val sheet = LayoutInflater.from(context).inflate(R.layout.dialog_subject_filter, null)
+        dialog.setContentView(sheet)
+
+        val container = sheet.findViewById<LinearLayout>(R.id.filterOptionsContainer)
+        val currentId = viewModel.selectedSubjectId.value
+
+        container.addView(
+            buildFilterRow(
+                label = "Todas las materias",
+                accent = context.getColor(R.color.colorIconMuted),
+                selected = currentId == null,
+                isAll = true
+            ) {
+                viewModel.filterBySubject(null)
+                tvFilter.text = "Todas las materias ▾"
+                dialog.dismiss()
+            }
+        )
+
+        subjectSnapshot.forEach { subject ->
+            val accent = accentColors.getOrElse(subject.colorIndex) { accentColors[0] }
+            container.addView(
+                buildFilterRow(
+                    label = subject.name,
+                    accent = accent,
+                    selected = subject.id == currentId,
+                    isAll = false
+                ) {
+                    viewModel.filterBySubject(subject.id)
+                    tvFilter.text = "${subject.name} ▾"
+                    dialog.dismiss()
+                }
+            )
+        }
+
+        dialog.show()
+    }
+
+    private fun buildFilterRow(
+        label: String,
+        @ColorInt accent: Int,
+        selected: Boolean,
+        isAll: Boolean,
+        onClick: () -> Unit
+    ): View {
+        val context = requireContext()
+        val row = LinearLayout(context).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            val padV = dp(14).toInt()
+            setPadding(dp(12).toInt(), padV, dp(12).toInt(), padV)
+            val lp = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            lp.bottomMargin = dp(2).toInt()
+            layoutParams = lp
+            isClickable = true
+            isFocusable = true
+            background = if (selected) {
+                GradientDrawable().apply {
+                    setColor(Color.argb(28, Color.red(accent), Color.green(accent), Color.blue(accent)))
+                    cornerRadius = dp(14f)
+                }
+            } else {
+                selectableItemBackground(context, borderless = false)
+            }
+        }
+
+        val dot = View(context).apply {
+            val size = dp(14).toInt()
+            val lp = LinearLayout.LayoutParams(size, size)
+            lp.rightMargin = dp(14).toInt()
+            layoutParams = lp
+            background = GradientDrawable().apply {
+                shape = GradientDrawable.OVAL
+                if (isAll) {
+                    setColor(Color.TRANSPARENT)
+                    setStroke(dp(2).toInt(), accent)
                 } else {
-                    val selected = subjects[which - 1]
-                    viewModel.filterBySubject(selected.id)
-                    tvFilter.text = "${selected.name} ▾"
+                    setColor(accent)
                 }
             }
-            .show()
+        }
+
+        val name = TextView(context).apply {
+            text = label
+            textSize = 15f
+            setTextColor(context.getColor(R.color.colorTextPrimary))
+            setTypeface(typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
+            layoutParams = LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f)
+        }
+
+        row.addView(dot)
+        row.addView(name)
+
+        if (selected) {
+            val check = ImageView(context).apply {
+                val size = dp(20).toInt()
+                val lp = LinearLayout.LayoutParams(size, size)
+                lp.leftMargin = dp(8).toInt()
+                layoutParams = lp
+                setImageResource(R.drawable.ic_check)
+                imageTintList = ColorStateList.valueOf(
+                    if (isAll) context.getColor(R.color.colorTextPrimary) else accent
+                )
+            }
+            row.addView(check)
+        }
+
+        row.setOnClickListener { onClick() }
+        return row
     }
 
     private fun showCreateNoteDialog() {
@@ -535,7 +630,7 @@ class ApuntesFragment : Fragment() {
 
     private fun subjectChipBackground(@ColorInt accent: Int, selected: Boolean): GradientDrawable {
         return GradientDrawable().apply {
-            setColor(if (selected) accent else Color.parseColor("#F3F4F6"))
+            setColor(if (selected) accent else requireContext().getColor(R.color.colorChipNeutralBackground))
             cornerRadius = dp(20f)
             if (!selected) setStroke(dp(1).toInt(), accent)
         }
@@ -552,6 +647,14 @@ class ApuntesFragment : Fragment() {
             .setDuration(300)
             .start()
     }
+
+    private fun selectableItemBackground(context: android.content.Context, borderless: Boolean) =
+        TypedValue().let { tv ->
+            val attr = if (borderless) android.R.attr.selectableItemBackgroundBorderless
+            else android.R.attr.selectableItemBackground
+            context.theme.resolveAttribute(attr, tv, true)
+            ContextCompat.getDrawable(context, tv.resourceId)
+        }
 
     private fun dp(value: Int): Float = dp(value.toFloat())
     private fun dp(value: Float): Float = value * resources.displayMetrics.density

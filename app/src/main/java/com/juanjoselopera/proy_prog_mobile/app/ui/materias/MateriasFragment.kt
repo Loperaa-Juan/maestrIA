@@ -33,6 +33,7 @@ import com.google.android.material.button.MaterialButton
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.ui.common.ConfirmDeleteDialog
 import com.juanjoselopera.proy_prog_mobile.app.MainActivity
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
@@ -240,12 +241,12 @@ class MateriasFragment : Fragment() {
         }
 
         card.setOnLongClickListener {
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle("Eliminar materia")
-                .setMessage("¿Seguro que quieres eliminar \"$subjectName\"?")
-                .setPositiveButton("Eliminar") { _, _ -> viewModel.deleteSubject(subjectId) }
-                .setNegativeButton("Cancelar", null)
-                .show()
+            ConfirmDeleteDialog.show(
+                context = requireContext(),
+                title = "Eliminar materia",
+                message = "¿Seguro que quieres eliminar \"$subjectName\"? Esta acción no se puede deshacer.",
+                onConfirm = { viewModel.deleteSubject(subjectId) }
+            )
             true
         }
 
@@ -367,8 +368,8 @@ class MateriasFragment : Fragment() {
     private fun iconSwatchBackground(selected: Boolean): GradientDrawable {
         return GradientDrawable().apply {
             shape = GradientDrawable.OVAL
-            setColor(Color.parseColor("#F3F4F6"))
-            if (selected) setStroke(dp(2).toInt(), Color.parseColor("#7C3AED"))
+            setColor(requireContext().getColor(R.color.colorChipNeutralBackground))
+            if (selected) setStroke(dp(2).toInt(), requireContext().getColor(R.color.colorAccentPrimary))
         }
     }
 

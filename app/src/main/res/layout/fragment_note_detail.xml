@@ -179,8 +179,8 @@
         android:layout_gravity="bottom|end"
         android:layout_margin="20dp"
         android:contentDescription="Editar"
-        android:src="@android:drawable/ic_menu_edit"
-        app:backgroundTint="@color/colorAccentPurple"
+        android:src="@drawable/ic_edit"
+        app:backgroundTint="@color/colorAccentPrimary"
         app:tint="@color/white" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -149,11 +149,11 @@ class ExtractTextFragment : Fragment() {
 
         var selectedIdx = subjects.indexOfFirst { it.id == defaultSubjectId }.takeIf { it >= 0 } ?: 0
 
-        val accentColors = listOf(
-            Color.parseColor("#1565C0"), Color.parseColor("#2E7D32"),
-            Color.parseColor("#C2185B"), Color.parseColor("#EF6C00"),
-            Color.parseColor("#6A1B9A"), Color.parseColor("#00838F")
-        )
+        val accentColors = resources.obtainTypedArray(R.array.subject_accents).let { ta ->
+            val colors = (0 until ta.length()).map { ta.getColor(it, Color.GRAY) }
+            ta.recycle()
+            colors
+        }
 
         fun dp(v: Float) = v * resources.displayMetrics.density
 
@@ -168,7 +168,7 @@ class ExtractTextFragment : Fragment() {
                     setTypeface(typeface, if (selected) Typeface.BOLD else Typeface.NORMAL)
                     setTextColor(if (selected) Color.WHITE else accent)
                     background = android.graphics.drawable.GradientDrawable().apply {
-                        setColor(if (selected) accent else Color.parseColor("#F3F4F6"))
+                        setColor(if (selected) accent else context.getColor(R.color.colorChipNeutralBackground))
                         cornerRadius = dp(20f)
                         if (!selected) setStroke(dp(1f).toInt(), accent)
                     }
