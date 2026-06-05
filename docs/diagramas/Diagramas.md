@@ -440,78 +440,135 @@ sequenceDiagram
 ## D07 — Diagrama de Estructura de Carpetas
 
 ```
-maestrIA/
-│
-├── app/                                ← Módulo principal de la aplicación Android
-│   └── src/main/
-│       ├── AndroidManifest.xml         ← Permisos, activities, FileProvider
-│       └── java/.../proy_prog_mobile/
-│           └── app/
-│               │
-│               ├── MaestrIAApplication.kt   ← Punto de entrada de Hilt (@HiltAndroidApp)
-│               ├── MainActivity.kt          ← Activity principal, aloja NavHostFragment
-│               ├── PresentationActivity.kt  ← Splash / pantalla de presentación
-│               │
-│               ├── ui/                      ← Capa de presentación (Fragments + ViewModels)
-│               │   ├── auth/                ← AuthFragment (contenedor Login/SignUp)
-│               │   ├── login/               ← LoginFragment, ForgotPasswordFragment, LoginViewModel
-│               │   ├── signup/              ← SignUpFragment, EmailVerificationFragment, SignUpViewModel
-│               │   ├── landing/             ← LandingFragment, LandingViewModel (apuntes recientes)
-│               │   ├── materias/            ← MateriasFragment, MateriasViewModel
-│               │   ├── apuntes/             ← ApuntesFragment, NoteDetailFragment,
-│               │   │                           ExtractTextFragment + sus ViewModels
-│               │   └── AI/                  ← AIFragment, NotePickerFragment, DeepResearchFragment
-│               │       └── result/          ← SummaryResultFragment, ConceptsResultFragment,
-│               │                               QuestionsResultFragment + sus ViewModels
-│               │
-│               ├── domain/                  ← Capa de dominio (independiente de Android)
-│               │   ├── model/               ← Clases de dominio: Note, Subject, User,
-│               │   │                           ConceptItem, QAItem, DeepResearchResult
-│               │   ├── repository/          ← Interfaces: AuthRepository, NoteRepository,
-│               │   │                           SubjectRepository, AiRepository
-│               │   └── usecase/             ← Casos de uso: FirebaseLoginUseCase,
-│               │                               FirebaseSignUpUseCase, ForgotPasswordUseCase,
-│               │                               GetSummaryUseCase, GetConceptsUseCase,
-│               │                               GetQuestionsUseCase, DeepResearchUseCase,
-│               │                               ExtractTextUseCase
-│               │
-│               ├── data/                    ← Capa de datos (implementaciones concretas)
-│               │   ├── local/               ← Room: AppDatabase, DAOs, Entities, Prefs
-│               │   │   ├── AppDatabase.kt
-│               │   │   ├── AIModelPrefs.kt
-│               │   │   ├── dao/             ← UserDao, MateriaDao
-│               │   │   └── entity/          ← UserEntity, MateriaEntity
-│               │   └── remote/
-│               │       ├── FirebaseAuthRepositoryImpl.kt   ← Auth con Firebase
-│               │       ├── firebase/        ← NoteRemoteDataSource, SubjectRemoteDataSource,
-│               │       │                       NoteRepositoryImpl, SubjectRepositoryImpl,
-│               │       │                       NoteDto, SubjectDto
-│               │       └── ai/              ← AiApiService (Retrofit), AiRepositoryImpl,
-│               │                               AuthInterceptor, DTOs (SummaryDto, ConceptsDto,
-│               │                               QuestionsDto, DeepResearchDto, ExtractTextDto)
-│               │
-│               └── di/                      ← Módulos Hilt (inyección de dependencias)
-│                   ├── AiModule.kt          ← provee Retrofit, OkHttp, AiApiService
-│                   ├── DatabaseModule.kt    ← provee AppDatabase, DAOs
-│                   ├── FirebaseModule.kt    ← provee FirebaseAuth, Firestore
-│                   ├── RepositoryModule.kt  ← bindea interfaces con implementaciones
-│                   └── SubjectNoteModule.kt ← provee SubjectRemoteDataSource, NoteRemoteDataSource
-│
-├── docs/                               ← Documentación del proyecto
-│   ├── SRS.md                          ← Especificación de requisitos (IEEE 830)
-│   ├── arquitectura.md                 ← Decisiones de arquitectura
-│   └── diagramas/
-│       └── diagramas.md                ← Este archivo (D01–D08)
-│
-├── Entregable-MVVM/                    ← Documentos de entrega académica
-│   ├── PROMPT.md
-│   └── DECISIONES.md
-│
-├── gradle/
-│   └── libs.versions.toml              ← Catálogo de versiones de dependencias
-├── build.gradle.kts                    ← Configuración global del proyecto
-├── settings.gradle.kts                 ← Nombre del proyecto y módulos
-└── .gitignore
+graph TD
+    %% Raíz del proyecto
+    maestrIA[Root: maestrIA]
+
+    %% Primer nivel (Hijos directos)
+    app[📂 app]
+    docs[📂 docs]
+    entregable[📂 Entregable-MVVM]
+    config[⚙️ Configuración]
+
+    maestrIA --> app
+    maestrIA --> docs
+    maestrIA --> entregable
+    maestrIA --> config
+
+    %% Rama de Documentación
+    srs[📄 SRS.md]
+    arq[📄 arquitectura.md]
+    diag[📂 diagramas]
+    diag_md[📄 diagramas.md]
+
+    docs --> srs
+    docs --> arq
+    docs --> diag
+    diag --> diag_md
+
+    %% Rama de Entregables
+    prompt[📄 PROMPT.md]
+    decisiones[📄 DECISIONES.md]
+    entregable --> promptS
+    entregable --> decisiones
+
+    %% Rama de Configuración de Raíz
+    gradle_f[📂 gradle / libs.versions.toml]
+    build[📄 build.gradle.kts]
+    settings[📄 settings.gradle.kts]
+    git[📄 .gitignore]
+    
+    config --> gradle_f
+    config --> build
+    config --> settings
+    config --> git
+
+    %% Rama App (Código Fuente)
+    src[📂 src / main]
+    manifest[📄 AndroidManifest.xml]
+    java[📂 java / ... / app]
+
+    app --> src
+    src --> manifest
+    src --> java
+
+    %% Archivos base dentro de app
+    appl[📄 MaestrIAApplication.kt]
+    main_act[📄 MainActivity.kt]
+    pres_act[📄 PresentationActivity.kt]
+    
+    java --> appl
+    java --> main_act
+    java --> pres_act
+
+    %% Las 4 Capas principales (Los "Nietos" del proyecto)
+    ui[📂 ui / Presentación]
+    domain[📂 domain / Dominio]
+    data[📂 data / Datos]
+    di[📂 di / Inyección]
+
+    java --> ui
+    java --> domain
+    java --> data
+    java --> di
+
+    %% Sub-ramas de UI
+    auth[📂 auth / login / signup]
+    land[📂 landing / Recientes]
+    mat[📂 materias]
+    apuntes[📂 apuntes / Detalles]
+    ai[📂 AI / AIFragment]
+    result[📂 result / Resultados]
+
+    ui --> auth
+    ui --> land
+    ui --> mat
+    ui --> apuntes
+    ui --> ai
+    ai --> result
+
+    %% Sub-ramas de Dominio
+    model[📄 model / Clases Puras]
+    repo_dom[📄 repository / Interfaces]
+    uc[📄 usecase / Casos de Uso]
+
+    domain --> model
+    domain --> repo_dom
+    domain --> uc
+
+    %% Sub-ramas de Data
+    local[📂 local / Room DB]
+    remote[📂 remote / Servidores]
+    
+    db_file[📄 AppDatabase.kt]
+    dao[📂 dao / User-Materia]
+    entity[📂 entity / Entidades]
+    
+    firebase[📂 firebase / Firestore]
+    ai_api[📂 ai / Retrofit API]
+
+    data --> local
+    data --> remote
+    
+    local --> db_file
+    local --> dao
+    local --> entity
+    
+    remote --> firebase
+    remote --> ai_api
+
+    %% Sub-ramas de DI (Módulos)
+    di_files[📄 Módulos Hilt: Ai, Database, Firebase, Repository...]
+    di --> di_files
+
+    %% Estilos estéticos para el árbol
+    style maestrIA fill:#2d3748,stroke:#fff,stroke-width:2px,color:#fff
+    style app fill:#1a365d,stroke:#3182ce,stroke-width:2px,color:#fff
+    style docs fill:#2c5282,stroke:#4299e1,stroke-width:1px,color:#fff
+    style ui fill:#2f855a,stroke:#48bb78,stroke-width:2px,color:#fff
+    style domain fill:#744210,stroke:#ecc94b,stroke-width:2px,color:#fff
+    style data fill:#9b2c2c,stroke:#f56565,stroke-width:2px,color:#fff
+    style di fill:#553c9a,stroke:#9f7aea,stroke-width:2px,color:#fff
 ```
 
 > **Responsabilidad de cada capa:**
