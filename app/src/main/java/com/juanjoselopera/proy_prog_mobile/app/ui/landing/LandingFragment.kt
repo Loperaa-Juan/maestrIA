@@ -24,9 +24,15 @@ import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromRi
 import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
+import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LandingFragment : Fragment() {
+
+    @Inject
+    lateinit var sessionManager: SessionManager
 
     private val viewModel: LandingViewModel by viewModels()
 
@@ -49,7 +55,17 @@ class LandingFragment : Fragment() {
         val recycler = view.findViewById<RecyclerView>(R.id.recentNotesRecycler)
 
         val currentUser = FirebaseAuth.getInstance().currentUser
-        val userName = currentUser?.displayName?.takeIf { it.isNotBlank() }
+        
+        if (currentUser == null) {
+            sessionManager.clearSession()
+            (activity as? MainActivity)?.let {
+                it.setNavComponentsVisibility(false)
+                it.replaceMainFragment(AuthFragment.newInstance(AuthFragment.TAB_LOGIN), false)
+            }
+            return
+        }
+
+        val userName = currentUser.displayName?.takeIf { it.isNotBlank() }
             ?: currentUser?.email?.substringBefore("@")?.replaceFirstChar { it.uppercase() }
             ?: "Usuario"
         tvWelcomeUser.text = "Hola, $userName 👋"

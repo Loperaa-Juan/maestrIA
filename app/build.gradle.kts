@@ -46,6 +46,10 @@ android {
     }
 }
 
+kapt {
+    correctErrorTypes = true
+}
+
 configurations.all {
     exclude(group = "org.jetbrains", module = "annotations-java5")
 }
@@ -71,6 +75,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.1")
 
     testImplementation(libs.junit)
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
 
@@ -106,5 +111,6 @@ dependencies {
     implementation("io.noties.markwon:inline-parser:4.6.2")
     implementation("io.noties.markwon:syntax-highlight:4.6.2")
     implementation("io.noties:prism4j:2.0.0")
+    kapt("io.noties:prism4j:2.0.0")
     kapt("io.noties:prism4j-bundler:2.0.0")
 }

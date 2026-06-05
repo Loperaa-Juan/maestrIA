@@ -105,6 +105,7 @@ class ApuntesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val list = view.findViewById<LinearLayout>(R.id.apuntesList)
+        val etSearch = view.findViewById<EditText>(R.id.etSearchNotes)
         val tvFilter = view.findViewById<TextView>(R.id.tvSubjectFilter)
         val tvTitle = view.findViewById<TextView>(R.id.tvApuntesTitle)
         val tvSubtitle = view.findViewById<TextView>(R.id.tvApuntesSubtitle)
@@ -146,19 +147,32 @@ class ApuntesFragment : Fragment() {
         var lastCount = -1
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.notes.collect { notes ->
+                viewModel.filteredNotes.collect { notes ->
+                    val query = viewModel.titleQuery.value.trim()
                     tvSubtitle.text = when (notes.size) {
                         0 -> "Sin apuntes aún"
                         1 -> "1 apunte"
                         else -> "${notes.size} apuntes"
                     }
                     list.removeAllViews()
-                    notes.forEach { note -> addNoteCard(list, note) }
-                    if (notes.size > lastCount && lastCount >= 0) animateNewCard(list.getChildAt(0))
+                    if (notes.isEmpty() && query.isNotBlank()) {
+                        list.addView(buildEmptyResultView(query))
+                    } else {
+                        notes.forEach { note -> addNoteCard(list, note) }
+                        if (notes.size > lastCount && lastCount >= 0) animateNewCard(list.getChildAt(0))
+                    }
                     lastCount = notes.size
                 }
             }
         }
+
+        etSearch.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
+            override fun afterTextChanged(s: Editable?) {}
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                viewModel.setTitleQuery(s?.toString().orEmpty())
+            }
+        })
 
         tvFilter.setOnClickListener { showSubjectFilterDialog(tvFilter) }
 
@@ -407,6 +421,22 @@ class ApuntesFragment : Fragment() {
         }
 
         container.addView(card, 0)
+    }
+
+    private fun buildEmptyResultView(query: String): TextView {
+        val context = requireContext()
+        return TextView(context).apply {
+            text = "Sin coincidencias para «$query»"
+            textSize = 14f
+            setTextColor(context.getColor(R.color.colorTextSecondary))
+            gravity = Gravity.CENTER
+            val lp = LinearLayout.LayoutParams(
+                ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
+            lp.topMargin = dp(32).toInt()
+            layoutParams = lp
+        }
     }
 
     // ── Dialogs ──────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
 import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.landing.LandingFragment
@@ -24,10 +25,16 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         if (savedInstanceState == null) {
-            if (sessionManager.isLoggedIn) {
+            val firebaseUser = FirebaseAuth.getInstance().currentUser
+            if (sessionManager.isLoggedIn && firebaseUser != null) {
                 setNavComponentsVisibility(true)
                 replaceMainFragment(LandingFragment(), false)
             } else {
+                // Si SharedPreferences decía que estaba logueado pero Firebase no, limpiamos
+                if (sessionManager.isLoggedIn) {
+                    sessionManager.clearSession()
+                }
+
                 val tab = when (intent.getStringExtra("view")) {
                     "signup" -> AuthFragment.TAB_SIGNUP
                     else -> AuthFragment.TAB_LOGIN

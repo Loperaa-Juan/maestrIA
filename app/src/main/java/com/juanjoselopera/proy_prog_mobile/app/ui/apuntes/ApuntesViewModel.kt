@@ -17,6 +17,7 @@ import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
@@ -53,13 +54,27 @@ class ApuntesViewModel @Inject constructor(
     private val _selectedSubjectId = MutableStateFlow<String?>(null)
     val selectedSubjectId: StateFlow<String?> = _selectedSubjectId.asStateFlow()
 
+    private val _titleQuery = MutableStateFlow("")
+    val titleQuery: StateFlow<String> = _titleQuery.asStateFlow()
+
     @OptIn(ExperimentalCoroutinesApi::class)
     val notes: StateFlow<List<Note>> = _selectedSubjectId
         .flatMapLatest { subjectId -> noteRepository.getNotes(subjectId) }
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
 
+    // Apuntes ya filtrados por materia y, además, por el título escrito en tiempo real.
+    val filteredNotes: StateFlow<List<Note>> = combine(notes, _titleQuery) { notes, query ->
+        val q = query.trim()
+        if (q.isBlank()) notes
+        else notes.filter { it.title.contains(q, ignoreCase = true) }
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
+
     fun filterBySubject(subjectId: String?) {
         _selectedSubjectId.value = subjectId
+    }
+
+    fun setTitleQuery(text: String) {
+        _titleQuery.value = text
     }
 
     fun addNote(title: String, content: String, subjectId: String, subjectName: String) {

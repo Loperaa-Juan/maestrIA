@@ -28,6 +28,9 @@ import com.juanjoselopera.proy_prog_mobile.app.data.local.AIModelPrefs
 import com.juanjoselopera.proy_prog_mobile.app.util.animateChildrenSlideInFromBottom
 import com.juanjoselopera.proy_prog_mobile.app.util.findFirstViewGroupById
 
+import dagger.hilt.android.AndroidEntryPoint
+
+@AndroidEntryPoint
 class AIFragment : Fragment() {
 
     private data class AITool(

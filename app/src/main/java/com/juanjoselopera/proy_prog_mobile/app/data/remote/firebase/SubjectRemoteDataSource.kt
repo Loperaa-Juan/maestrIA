@@ -1,5 +1,6 @@
 package com.juanjoselopera.proy_prog_mobile.app.data.remote.firebase
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.juanjoselopera.proy_prog_mobile.app.domain.model.Subject
@@ -28,7 +29,13 @@ class SubjectRemoteDataSource @Inject constructor(
             return@callbackFlow
         }
         val listener = collection.addSnapshotListener { snapshot, error ->
-            if (error != null) { close(error); return@addSnapshotListener }
+            if (error != null) {
+                // No propagamos la excepción: tumbaría la app desde un callback en el hilo Main.
+                // Degradamos a lista vacía y dejamos rastro para diagnosticar (p. ej. PERMISSION_DENIED).
+                Log.w("SubjectRemoteDataSource", "Firestore listen failed", error)
+                trySend(emptyList())
+                return@addSnapshotListener
+            }
             val subjects = snapshot?.documents?.mapNotNull { doc ->
                 doc.toObject(SubjectDto::class.java)?.copy(id = doc.id)
             } ?: emptyList()
