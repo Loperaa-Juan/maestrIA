@@ -2,11 +2,16 @@ package com.juanjoselopera.proy_prog_mobile.app
 
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.juanjoselopera.proy_prog_mobile.R
+import com.juanjoselopera.proy_prog_mobile.app.core.connectivity.ConnectivityObserver
 import com.juanjoselopera.proy_prog_mobile.app.ui.AI.AIFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.apuntes.ApuntesFragment
 import com.juanjoselopera.proy_prog_mobile.app.ui.auth.AuthFragment
@@ -16,6 +21,7 @@ import com.juanjoselopera.proy_prog_mobile.app.ui.materias.MateriasFragment
 import com.juanjoselopera.proy_prog_mobile.app.util.SessionManager
 import com.juanjoselopera.proy_prog_mobile.app.util.applySlideInTransition
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -23,6 +29,9 @@ class MainActivity : AppCompatActivity() {
 
     @Inject
     lateinit var sessionManager: SessionManager
+
+    @Inject
+    lateinit var connectivityObserver: ConnectivityObserver
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +64,7 @@ class MainActivity : AppCompatActivity() {
                 replaceMainFragment(AuthFragment.newInstance(tab), false)
             }
         }
+        observeConnectivity()
     }
 
     fun setNavComponentsVisibility(visible: Boolean) {
@@ -104,6 +114,17 @@ class MainActivity : AppCompatActivity() {
         val bottomNav = findViewById<BottomNavigationView>(R.id.bottomNav) ?: return
         if (bottomNav.selectedItemId != itemId) {
             bottomNav.menu.findItem(itemId)?.isChecked = true
+        }
+    }
+
+    private fun observeConnectivity() {
+        val banner = findViewById<TextView>(R.id.offline_banner)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                connectivityObserver.observe().collect { online ->
+                    banner.visibility = if (online) View.GONE else View.VISIBLE
+                }
+            }
         }
     }
 }
