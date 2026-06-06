@@ -68,12 +68,8 @@ class RecentNoteAdapter(
             colorBar.setBackgroundColor(accent)
             tvTitle.text = note.title
 
-            if (note.content.isNotBlank()) {
-                tvPreview.text = note.content
-                tvPreview.visibility = View.VISIBLE
-            } else {
-                tvPreview.visibility = View.GONE
-            }
+            // Igual que en "Apuntes": solo se muestra el título, sin la vista previa del contenido.
+            tvPreview.visibility = View.GONE
 
             if (note.subjectName.isNotBlank()) {
                 tvSubject.text = note.subjectName
