@@ -13,7 +13,7 @@ import javax.inject.Inject
 class NoteRemoteDataSource @Inject constructor(
     private val firestore: FirebaseFirestore,
     private val auth: FirebaseAuth
-) {
+) : NoteSyncSource {
     private val notesCollection
         get() = auth.currentUser?.uid?.let { uid ->
             firestore.collection("users")
@@ -64,5 +64,22 @@ class NoteRemoteDataSource @Inject constructor(
     suspend fun deleteNote(noteId: String) {
         val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
         collection.document(noteId).delete().await()
+    }
+
+    override suspend fun fetchAll(): List<NoteDto> {
+        val collection = notesCollection ?: return emptyList()
+        return collection.get().await().documents.mapNotNull { doc ->
+            doc.toObject(NoteDto::class.java)?.copy(id = doc.id)
+        }
+    }
+
+    override suspend fun upsert(dto: NoteDto) {
+        val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
+        collection.document(dto.id).set(dto).await()
+    }
+
+    override suspend fun delete(id: String) {
+        val collection = notesCollection ?: throw IllegalStateException("User not authenticated")
+        collection.document(id).delete().await()
     }
 }
