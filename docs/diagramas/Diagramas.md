@@ -103,7 +103,7 @@ W --> C
 G --> C
 ```
 
-# D03 - Arquitectura Móvil (MVVM)
+# D03 - Arquitectura Móvil (MVVM + Offline-first)
 
 ```mermaid
 flowchart TD
@@ -132,12 +132,18 @@ C3[NoteRepository]
 C4[AiRepository]
 end
 
-subgraph Local
-D1[Room Database]
-D2[UserDao]
-D3[MateriaDao]
-D4[UserEntity]
-D5[MateriaEntity]
+subgraph Local["Local (fuente de verdad)"]
+D1[Room AppDatabase]
+D2[SubjectDao]
+D3[NoteDao]
+D4[SubjectEntity]
+D5[NoteEntity]
+end
+
+subgraph Sync["Sincronización"]
+S1[SyncManager]
+S2[SyncEngine]
+S3[ConnectivityObserver]
 end
 
 subgraph Remote
@@ -161,13 +167,25 @@ B2 --> C2
 B3 --> C3
 B4 --> C4
 
+%% Las materias y apuntes leen y escriben en Room (offline-first)
 C2 --> D1
 C3 --> D1
+D1 --> D2
+D1 --> D3
+D2 --> D4
+D3 --> D5
 
+%% Auth y AI siguen yendo directo a la red
 C1 --> E1
-C2 --> E2
-C3 --> E2
 C4 --> E3
+
+%% Los repositorios piden sync tras escribir; el motor reconcilia con Firestore
+C2 -. requestSync .-> S1
+C3 -. requestSync .-> S1
+S3 --> S1
+S1 --> S2
+S2 <-->|push / pull LWW| E2
+S2 --> D1
 
 E1 --> F1
 E2 --> F1
@@ -177,30 +195,42 @@ E3 --> F1
 
 ```mermaid
 erDiagram
-    %% ── ROOM (LOCAL) ─────────────────────────────────────
-    USERS_LOCAL {
-        TEXT uid PK "UID de Firebase Auth"
-        TEXT email "Correo electrónico"
-        TEXT displayName "Nombre del usuario (nullable)"
-    }
-
-    MATERIAS_LOCAL {
-        INTEGER id PK "AUTOINCREMENT"
+    %% ── ROOM (LOCAL — fuente de verdad offline-first) ─────
+    SUBJECTS_LOCAL {
+        TEXT id PK "UUID generado en cliente (= id en Firestore)"
         TEXT name "Nombre de la materia"
         INTEGER iconIndex "Índice del ícono"
         INTEGER colorIndex "Índice del color"
+        INTEGER updatedAt "Última modificación local (LWW)"
+        INTEGER pendingSync "1 = cambios locales sin enviar"
+        INTEGER deleted "1 = tombstone (borrado lógico)"
+    }
+
+    NOTES_LOCAL {
+        TEXT id PK "UUID generado en cliente (= id en Firestore)"
+        TEXT title "Título del apunte"
+        TEXT content "Cuerpo en Markdown"
+        TEXT subjectId FK "Referencia a subjects"
+        TEXT subjectName "Nombre desnormalizado"
+        TEXT tags "Lista serializada (TypeConverter)"
+        INTEGER createdAt "Timestamp epoch ms"
+        TEXT imageUri "URI imagen OCR (nullable)"
+        INTEGER updatedAt "Última modificación local (LWW)"
+        INTEGER pendingSync "1 = cambios locales sin enviar"
+        INTEGER deleted "1 = tombstone (borrado lógico)"
     }
 
     %% ── FIRESTORE (REMOTO) ───────────────────────────────
     FIRESTORE_SUBJECTS {
-        STRING id PK "ID generado por Firestore"
+        STRING id PK "Mismo UUID que la fila local"
         STRING name "Nombre de la materia"
         NUMBER iconIndex "Índice del ícono"
         NUMBER colorIndex "Índice del color"
+        NUMBER updatedAt "Timestamp epoch ms (LWW)"
     }
 
     FIRESTORE_NOTES {
-        STRING id PK "ID generado por Firestore"
+        STRING id PK "Mismo UUID que la fila local"
         STRING title "Título del apunte"
         STRING content "Cuerpo en Markdown"
         STRING subjectId FK "Referencia a subjects"
@@ -208,18 +238,26 @@ erDiagram
         ARRAY tags "Etiquetas"
         NUMBER createdAt "Timestamp epoch ms"
         STRING imageUri "URI imagen OCR (nullable)"
+        NUMBER updatedAt "Timestamp epoch ms (LWW)"
     }
 
     %% ── RELACIONES ───────────────────────────────────────
-    USERS_LOCAL ||--o{ MATERIAS_LOCAL : "cachea (por sesión)"
+    SUBJECTS_LOCAL ||--o{ NOTES_LOCAL : "subjectId →"
     FIRESTORE_SUBJECTS ||--o{ FIRESTORE_NOTES : "subjectId →"
+    SUBJECTS_LOCAL ||--|| FIRESTORE_SUBJECTS : "mismo id (sync LWW)"
+    NOTES_LOCAL ||--|| FIRESTORE_NOTES : "mismo id (sync LWW)"
 ```
 
 > **Nota de ubicación:**
-> - `USERS_LOCAL` y `MATERIAS_LOCAL` → Room (SQLite en el dispositivo)
+> - `SUBJECTS_LOCAL` y `NOTES_LOCAL` → Room (SQLite en el dispositivo). Es la
+>   **fuente de verdad** que lee la UI: materias y apuntes se crean, editan y borran
+>   localmente aunque no haya red.
 > - `FIRESTORE_SUBJECTS` → `Firestore: users/{uid}/subjects/{subjectId}`
 > - `FIRESTORE_NOTES` → `Firestore: users/{uid}/notes/{noteId}`
-> - Los apuntes **no** se cachean en Room; siempre se leen desde Firestore.
+> - La fila local y su documento remoto comparten el **mismo `id`** (UUID de cliente).
+>   El `SyncEngine` reconcilia ambos lados por *last-write-wins* sobre `updatedAt`.
+> - Los datos del usuario (uid, email) **no** se persisten en Room: viven en
+>   Firebase Auth y en `SessionManager` (SharedPreferences).
 
 ---
 
