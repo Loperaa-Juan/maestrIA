@@ -1,7 +1,5 @@
 package com.juanjoselopera.proy_prog_mobile.app.data.remote.firebase
 
-import com.juanjoselopera.proy_prog_mobile.app.domain.model.Note
-
 data class NoteDto(
     val id: String = "",
     val title: String = "",
@@ -12,30 +10,4 @@ data class NoteDto(
     val createdAt: Long = 0L,
     val imageUri: String? = null,
     val updatedAt: Long = 0L
-) {
-    fun toNote() = Note(
-        id = id,
-        title = title,
-        content = content,
-        subjectId = subjectId,
-        subjectName = subjectName,
-        tags = tags,
-        createdAt = createdAt,
-        imageUri = imageUri
-    )
-
-    companion object {
-        // Legacy: no fija updatedAt (queda en 0L). NO usar en el push de sync;
-        // para eso usa NoteEntity.toDto(). Se eliminará al migrar los repos a Room.
-        fun fromNote(note: Note) = NoteDto(
-            id = note.id,
-            title = note.title,
-            content = note.content,
-            subjectId = note.subjectId,
-            subjectName = note.subjectName,
-            tags = note.tags,
-            createdAt = note.createdAt,
-            imageUri = note.imageUri
-        )
-    }
-}
+)
