@@ -10,7 +10,8 @@ data class NoteDto(
     val subjectName: String = "",
     val tags: List<String> = emptyList(),
     val createdAt: Long = 0L,
-    val imageUri: String? = null
+    val imageUri: String? = null,
+    val updatedAt: Long = 0L
 ) {
     fun toNote() = Note(
         id = id,
@@ -24,6 +25,8 @@ data class NoteDto(
     )
 
     companion object {
+        // Legacy: no fija updatedAt (queda en 0L). NO usar en el push de sync;
+        // para eso usa NoteEntity.toDto(). Se eliminará al migrar los repos a Room.
         fun fromNote(note: Note) = NoteDto(
             id = note.id,
             title = note.title,
