@@ -168,7 +168,6 @@ Las materias y los apuntes son **offline-first**: **Room es la única fuente de
 verdad que lee la UI**. Esto permite crear, editar y borrar sin conexión con
 respuesta instantánea, y reconciliar con Firestore cuando vuelve la red.
 
-> 📄 Diseño completo en [`docs/superpowers/specs/2026-06-05-offline-first-room-sync-design.md`](docs/superpowers/specs/2026-06-05-offline-first-room-sync-design.md).
 
 ### Cómo funciona
 
